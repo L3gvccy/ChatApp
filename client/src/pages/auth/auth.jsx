@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
-import { REGISTER_ROUTE } from "@/utils/constants";
+import { LOGIN_ROUTE, REGISTER_ROUTE } from "@/utils/constants";
+import { useNavigate } from "react-router-dom";
 
 export default function Auth () {
+    const navigate = useNavigate()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
@@ -33,14 +35,54 @@ export default function Auth () {
         return true;
     }
 
-    const handleLogin = async () => {}
+    const validateLogin = () => {
+        if (!email.length) {
+            toast.error("Електронна пошта обов'язкова")
+            return false;
+        }
+        if (!password.length) {
+            toast.error("Пароль обов'язковий")
+            return false;
+        }
+
+        return true;
+    }
+
+    const handleLogin = async () => {
+        if (!validateLogin()) return;
+        await apiClient.post(LOGIN_ROUTE, {email, password}, {withCredentials: true})
+        .then((res) => {
+            if (res.status === 200) {
+            res.data.user.profileSetup ? navigate("/chat") : navigate("/profile")
+        }
+        })
+        .catch((err) => {
+            const msg = err.response?.data;
+            toast.error(msg)
+        })
+    }
 
     const handleRegister = async () => {
         if (!validateRegister()) return;
 
-        const res = await apiClient.post(REGISTER_ROUTE, {email, password})
-        console.log(res)
+        await apiClient.post(REGISTER_ROUTE, {email, password}, {withCredentials: true})
+        .then((res) => {
+            if (res.status === 201) {
+                toast.success("Ви успішно зареєструвались!")
+            }
+        })
+        .catch((err) => {
+            const status = err.response?.status;
+
+            if (status === 409) {
+                toast.error("Користувач з такою поштою вже зареєстрован")
+            }
+        })
     }
+
+    useEffect(() => {
+        document.title = "QChat - Авторизація"
+    }, [])
 
     return (
         <div className="h-screen w-screen flex items-center justify-center">
@@ -48,7 +90,7 @@ export default function Auth () {
                 <div className="flex flex-col gap-10 items-center justify-center">
                     <div className="flex flex-col items-center justify-center w-full gap-6">
                         <h1 className="text-4xl font-semibold">Вітаємо у QChat!</h1>
-                        <img src="/logo.png" alt="logo" className="max-w-[128px] hidden md:block" />
+                        <img src="/logo.png" alt="logo" className="max-w-32 hidden md:block" />
                         <p className="w-3/4 text-center">Увійдіть або зареєструйтесь, щоб скористатись нашим чатом!</p>
                         <Tabs defaultValue="login" className="w-3/4 flex flex-col h-full">
                             <TabsList className="bg-transparent rounded-none w-full">

@@ -1,3 +1,4 @@
+import { compare } from "bcrypt";
 import User from "../models/UserModel.js";
 import jwt from "jsonwebtoken";
 
@@ -13,6 +14,12 @@ export const register = async (req, res, next) => {
         if (!email || !password) {
             return res.status(400).send("Email та пароль обов'язкові")
         }
+        
+        const existingUser = await User.findOne({ email })
+
+        if (existingUser) {
+            return res.status(409).send("Користувач з такою поштою вже зареєстрован")
+        }
 
         const user = await User.create({email, password})
         res.cookie("jwt", createToken(email, user.id), {
@@ -26,6 +33,38 @@ export const register = async (req, res, next) => {
                 email: user.email,
                 profileSetup: user.profileSetup
             }
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send("Помилка сервара")
+    }
+}
+
+export const login = async (req, res, next) => {
+    try {
+        const { email, password } = req.body
+        if (!email || !password) {
+            return res.status(400).send("Email та пароль обов'язкові")
+        }
+
+        const user = await User.findOne({ email })
+        if (!user) {
+            return res.status(404).send("Користувач з такою поштою не зареєстрован")
+        }
+
+        const auth = await compare(password, user.password)
+
+        if (!auth) {
+            return res.status(400).send("Невірний пароль")
+        }
+
+        res.cookie("jwt", createToken(email, user.id), {
+            maxAge,
+            secure: true,
+            sameSite: "None"
+        })
+        return res.status(200).json({
+            user: user
         })
     } catch (error) {
         console.log(error)
