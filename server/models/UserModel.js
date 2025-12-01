@@ -33,10 +33,9 @@ const userSchema = mongoose.Schema({
     }
 })
 
-userSchema.pre("save", async (next) => {
+userSchema.pre("save", async function () {
     const salt = await genSalt();
-    this.password = await hash(this.password, salt)
-    next();
+    this.password = await hash(this.password, salt);
 })
 
 const User = mongoose.model("Users", userSchema)

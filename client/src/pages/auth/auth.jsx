@@ -3,15 +3,44 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { apiClient } from "@/lib/api-client";
+import { REGISTER_ROUTE } from "@/utils/constants";
 
 export default function Auth () {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
 
+    const validateRegister = () => {
+        if (!email.length) {
+            toast.error("Електронна пошта обов'язкова")
+            return false;
+        }
+        if (!password.length) {
+            toast.error("Пароль обов'язковий")
+            return false;
+        }
+        if (password.length < 8) {
+            toast.error("Довжина паролю має бути більшою за 8 символів")
+            return false;
+        }
+        if (password !== confirmPassword) {
+            toast.error("Паролі не співпадають")
+            return false;
+        }
+
+        return true;
+    }
+
     const handleLogin = async () => {}
 
-    const handleRegister = async () => {}
+    const handleRegister = async () => {
+        if (!validateRegister()) return;
+
+        const res = await apiClient.post(REGISTER_ROUTE, {email, password})
+        console.log(res)
+    }
 
     return (
         <div className="h-screen w-screen flex items-center justify-center">

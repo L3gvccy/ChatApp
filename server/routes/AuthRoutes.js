@@ -3,6 +3,6 @@ import { register } from "../controllers/AuthController.js";
 
 const authRoutes = Router();
 
-authRoutes.post("/regiter", register)
+authRoutes.post("/register", register)
 
 export default authRoutes
