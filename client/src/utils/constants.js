@@ -7,3 +7,5 @@ export const GET_USER_INFO = `${AUTH_ROUTES}/user-info`;
 
 export const PROFILE_ROUTES = "/api/profile";
 export const UPDATE_PROFILE_ROUTE = `${PROFILE_ROUTES}/update-profile`;
+export const UPLOAD_PROFILE_IMAGE = `${PROFILE_ROUTES}/upload-profile-image`;
+export const DELETE_PROFILE_IMAGE = `${PROFILE_ROUTES}/delete-profile-image`;
