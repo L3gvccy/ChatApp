@@ -1,4 +1,5 @@
 import React from "react";
+import ProfileInfo from "./profile-info";
 
 const ContactsContainer = () => {
   return (
@@ -14,6 +15,7 @@ const ContactsContainer = () => {
           <Title text="Групові чати" />
         </div>
       </div>
+      <ProfileInfo />
     </div>
   );
 };
