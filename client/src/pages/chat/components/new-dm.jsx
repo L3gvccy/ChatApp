@@ -117,7 +117,7 @@ const NewDM = () => {
                         />
                       ) : (
                         <div
-                          className={`uppercase h-12 w-12 text-xl rounded-full flex justify-center items-center ${getColor(
+                          className={`uppercase h-12 w-12 text-2xl rounded-full flex justify-center items-center ${getColor(
                             contact.color
                           )}`}
                         >
@@ -139,11 +139,11 @@ const NewDM = () => {
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-xl text-zinc-300 px-6 text-center gap-5">
                 <FaFaceSadTear className="text-6xl" />
-                <p>За вашим пошуковим запитом не знайден жодного контакту</p>
+                <p>За вашим пошуковим запитом не знайдено жодного контакту</p>
               </div>
             )
           ) : (
-            <div className="flex-1 md:bg-zinc-900 md:flex flex-col justify-center items-center hidden duration-1000 transition-all">
+            <div className="flex-1 md:bg-zinc-900 flex flex-col justify-center items-center duration-1000 transition-all">
               <Lottie
                 isClickToPauseDisabled={true}
                 height={120}
