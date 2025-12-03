@@ -49,7 +49,7 @@ const MessageBar = () => {
             <button
               className=" my-auto text-2xl text-zinc-500 focus:text-zinc-100 transition-all duration-300 cursor-pointer"
               onClick={() => {
-                setEmojiPickerOpen(!emojiPickerOpen);
+                setEmojiPickerOpen((prev) => !prev);
               }}
             >
               <RiEmojiStickerLine />

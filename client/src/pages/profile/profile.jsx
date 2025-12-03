@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
 import {
   DELETE_PROFILE_IMAGE,
+  LOGOUT_ROUTE,
   UPDATE_PROFILE_ROUTE,
   UPLOAD_PROFILE_IMAGE,
 } from "@/utils/constants";
@@ -68,6 +69,25 @@ export default function Profile() {
           toast.error(msg);
         });
     }
+  };
+
+  const handleLogout = async () => {
+    await apiClient
+      .post(LOGOUT_ROUTE, {}, { withCredentials: true })
+      .then((res) => {
+        if (res.status === 200) {
+          const msg = res.data;
+          toast.success(msg);
+          setUserInfo(null);
+        }
+      })
+      .catch((err) => {
+        const msg = err.response?.data;
+        toast.error(msg);
+      })
+      .finally(() => {
+        navigate("/auth");
+      });
   };
 
   const handleFileInputClick = () => {
@@ -133,7 +153,10 @@ export default function Profile() {
           }}
         />
         <h2 className="text-zinc-100 text-3xl font-semibold">Профіль</h2>
-        <IoLogOutOutline className="text-4xl text-zinc-300 hover:text-zinc-100 active:text-zinc-400 cursor-pointer" />
+        <IoLogOutOutline
+          className="text-4xl text-zinc-300 hover:text-zinc-100 active:text-zinc-400 cursor-pointer"
+          onClick={handleLogout}
+        />
       </div>
 
       <div className="bg-zinc-900 border-2 border-zinc-900 rounded-3xl w-[90vw] max-w-[480px] h-[80vh] shadow-2xl p-6 flex items-center">
@@ -221,7 +244,7 @@ export default function Profile() {
               placeholder="Прізвище"
               type="text"
               value={lastName}
-              className="p-6 rounded-lg bg-zinc-600 placeholder:text-gray-400 text-2xl text-white border-none"
+              className="p-6 rounded-lg bg-zinc-600 placeholder:text-gray-400 text-white border-none"
               onChange={(e) => {
                 setLastName(e.target.value);
               }}

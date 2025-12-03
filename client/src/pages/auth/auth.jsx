@@ -11,7 +11,7 @@ import { useAppStore } from "@/store";
 
 export default function Auth() {
   const navigate = useNavigate();
-  const { setUserInfo } = useAppStore;
+  const { userInfo, setUserInfo } = useAppStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -63,6 +63,9 @@ export default function Auth() {
       .catch((err) => {
         const msg = err.response?.data;
         toast.error(msg);
+      })
+      .finally(() => {
+        userInfo.profileSetup ? navigate("/chat") : navigate("/profile");
       });
   };
 

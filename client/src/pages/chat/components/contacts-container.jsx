@@ -26,7 +26,7 @@ const Logo = () => {
   return (
     <div
       id="logo"
-      className="flex gap-5 text-2xl roboto-condensed-700 text-purple-700 p-4"
+      className="flex gap-5 text-2xl roboto-condensed-700 text-purple-700 p-4 bg-zinc-800 rounded-b-lg"
     >
       <img src="/logo.png" alt="" className="w-8 h-8" />
       <p>QChat</p>

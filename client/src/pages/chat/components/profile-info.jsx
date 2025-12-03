@@ -9,6 +9,9 @@ import { getColor } from "@/lib/utils";
 import { useAppStore } from "@/store";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { apiClient } from "@/lib/api-client";
+import { LOGOUT_ROUTE } from "@/utils/constants";
+import { toast } from "sonner";
 
 const ProfileInfo = () => {
   const trimName = (name) => {
@@ -22,10 +25,29 @@ const ProfileInfo = () => {
     }
   };
   const navigate = useNavigate();
-  const { userInfo } = useAppStore();
+  const { userInfo, setUserInfo } = useAppStore();
   let fullName = trimName(`${userInfo.firstName} ${userInfo.lastName}`);
   const selectedColor = userInfo.color;
   const image = userInfo?.image || null;
+
+  const handleLogout = async () => {
+    await apiClient
+      .post(LOGOUT_ROUTE, {}, { withCredentials: true })
+      .then((res) => {
+        if (res.status === 200) {
+          const msg = res.data;
+          toast.success(msg);
+          setUserInfo(null);
+        }
+      })
+      .catch((err) => {
+        const msg = err.response?.data;
+        toast.error(msg);
+      })
+      .finally(() => {
+        navigate("/auth");
+      });
+  };
 
   return (
     <div className="absolute bottom-0 p-4 w-full bg-zinc-800 rounded-t-xl flex items-center justify-between">
@@ -64,7 +86,7 @@ const ProfileInfo = () => {
           <TooltipContent>Редагувати профіль</TooltipContent>
         </Tooltip>
         <Tooltip>
-          <TooltipTrigger className="cursor-pointer">
+          <TooltipTrigger className="cursor-pointer" onClick={handleLogout}>
             <IoLogOutOutline />
           </TooltipTrigger>
           <TooltipContent>Вийти</TooltipContent>
