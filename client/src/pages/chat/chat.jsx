@@ -19,7 +19,7 @@ export default function Chat() {
   return (
     <div className="flex h-screen text-gray-100 overflow-hidden">
       <ContactsContainer />
-      <EmptyChatContainer />
+      {/* <EmptyChatContainer /> */}
       <ChatContainer />
     </div>
   );

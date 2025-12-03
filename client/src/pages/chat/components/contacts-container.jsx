@@ -2,7 +2,7 @@ import React from "react";
 
 const ContactsContainer = () => {
   return (
-    <div className="relative md:w-[35vw] lg:w-[30vw] xl:w-[20vw] w-full bg-zinc-900 border-r-2 border-zinc-700">
+    <div className="relative md:w-[35vw] lg:w-[30vw] xl:w-[20vw] w-full bg-zinc-900 border-r-2 border-zinc-800">
       <Logo />
       <div className="my-5">
         <div className="flex items-center justify-between pr-10">
