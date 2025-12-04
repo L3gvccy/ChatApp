@@ -59,7 +59,7 @@ const NewDM = () => {
 
   const handleChooseContact = (contact) => {
     setNewDMModalOpen(false);
-    setSelectedChatType("dm");
+    setSelectedChatType("contact");
     setSelectedChatData(contact);
     setSearchContacts([]);
   };
