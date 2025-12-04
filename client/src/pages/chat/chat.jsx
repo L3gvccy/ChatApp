@@ -16,6 +16,10 @@ export default function Chat() {
     }
   }, [userInfo, navigate]);
 
+  useEffect(() => {
+    document.title = "QChat";
+  }, []);
+
   return (
     <div className="flex h-screen text-gray-100 overflow-hidden">
       <ContactsContainer />

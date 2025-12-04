@@ -8,6 +8,7 @@ import profileRoutes from "./routes/ProfileRoutes.js";
 import "./config/cloudinaryConfig.js";
 import contactRoutes from "./routes/ContactRoutes.js";
 import setupSocket from "./socket.js";
+import messagesRoutes from "./routes/MessagesRoutes.js";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/messages", messagesRoutes);
 
 const server = app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

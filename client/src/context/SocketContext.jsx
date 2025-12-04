@@ -1,5 +1,6 @@
+import { apiClient } from "@/lib/api-client";
 import { useAppStore } from "@/store";
-import { HOST } from "@/utils/constants";
+import { GET_CONTACTS_DM_ROUTE, HOST } from "@/utils/constants";
 import { createContext, useState, useEffect, useRef, useContext } from "react";
 import { io } from "socket.io-client";
 
@@ -25,18 +26,29 @@ export const SocketProvider = ({ children }) => {
         console.log("Connected to socket server");
       });
 
-      const handleRecieveMessage = (message) => {
-        const { selectedChatType, selectedChatData, addMessage } =
-          useAppStore.getState();
+      const handleRecieveMessage = async (message) => {
+        const {
+          selectedChatType,
+          selectedChatData,
+          addMessage,
+          directMessagesContacts,
+          setDirectMessagesContacts,
+        } = useAppStore.getState();
 
         if (
           selectedChatType != undefined &&
           (selectedChatData._id === message.sender._id ||
             selectedChatData._id === message.reciever._id)
         ) {
-          console.log("message", message);
           addMessage(message);
         }
+
+        const res = await apiClient.get(GET_CONTACTS_DM_ROUTE, {
+          withCredentials: true,
+        });
+
+        res.data.contacts.length > 0 &&
+          setDirectMessagesContacts(res.data.contacts);
       };
 
       socket.current.on("recieveMessage", handleRecieveMessage);

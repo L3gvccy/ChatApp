@@ -13,3 +13,7 @@ export const DELETE_PROFILE_IMAGE = `${PROFILE_ROUTES}/delete-profile-image`;
 
 export const CONTACT_ROUTES = "/api/contact";
 export const SEARCH_CONTACTS_ROUTE = `${CONTACT_ROUTES}/search-contacts`;
+export const GET_CONTACTS_DM_ROUTE = `${CONTACT_ROUTES}/get-contacts-dm`;
+
+export const MESSAGES_ROUTES = "/api/messages";
+export const GET_MESSAGES_ROUTE = `${MESSAGES_ROUTES}/get-messages`;
