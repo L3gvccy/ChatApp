@@ -32,16 +32,18 @@ const MessageBar = () => {
   }, [emojiRef]);
 
   const handleSendMessage = async () => {
-    if (selectedChatType === "contact") {
-      socket.emit("sendMessage", {
-        sender: userInfo._id,
-        content: message,
-        reciever: selectedChatData._id,
-        type: "text",
-        fileUrl: undefined,
-      });
-    }
-    setMessage("");
+    if (message.length > 0) {
+      if (selectedChatType === "contact") {
+        socket.emit("sendMessage", {
+          sender: userInfo._id,
+          content: message,
+          reciever: selectedChatData._id,
+          type: "text",
+          fileUrl: undefined,
+        });
+      }
+      setMessage("");
+    } else return;
   };
 
   return (
