@@ -20,18 +20,10 @@ import { apiClient } from "@/lib/api-client";
 import { SEARCH_CONTACTS_ROUTE } from "@/utils/constants";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { useAppStore } from "@/store";
 
 const NewDM = () => {
-  const trimName = (name) => {
-    let result;
-    if (name.length >= 20) {
-      result = name.slice(0, 20);
-      result += "...";
-      return result;
-    } else {
-      return name;
-    }
-  };
+  const { setSelectedChatType, setSelectedChatData } = useAppStore();
   const [newDMModalOpen, setNewDMModalOpen] = useState(false);
   const [searchContacts, setSearchContacts] = useState("");
   const [loading, setLoading] = useState(false);
@@ -63,6 +55,13 @@ const NewDM = () => {
           }, 300);
         });
     }
+  };
+
+  const handleChooseContact = (contact) => {
+    setNewDMModalOpen(false);
+    setSelectedChatType("dm");
+    setSelectedChatData(contact);
+    setSearchContacts([]);
   };
 
   return (
@@ -107,6 +106,9 @@ const NewDM = () => {
                   <div
                     key={i}
                     className="flex w-full gap-5 bg-zinc-900 hover:bg-zinc-800 rounded-xl cursor-pointer p-3"
+                    onClick={() => {
+                      handleChooseContact(contact);
+                    }}
                   >
                     <Avatar className="h-12 w-12 rounded-full overflow-hidden ">
                       {contact.image ? (
