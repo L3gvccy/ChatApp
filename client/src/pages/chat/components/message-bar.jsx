@@ -6,9 +6,14 @@ import { MdSend } from "react-icons/md";
 import EmojiPicker from "emoji-picker-react";
 import { useSocket } from "@/context/SocketContext";
 import { useAppStore } from "@/store";
+import { toast } from "sonner";
+import { apiClient } from "@/lib/api-client";
+import { UPLOAD_FILE_ROUTE } from "@/utils/constants";
+import { ClimbingBoxLoader } from "react-spinners";
 
 const MessageBar = () => {
   const emojiRef = useRef();
+  const fileInputRef = useRef();
   const socket = useSocket();
   const { selectedChatType, selectedChatData, userInfo } = useAppStore();
   const [message, setMessage] = useState("");
@@ -46,6 +51,43 @@ const MessageBar = () => {
     } else return;
   };
 
+  const handleFileClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    console.log(file);
+
+    if (file) {
+      let formData = new FormData();
+      formData.append("file", file);
+      await apiClient
+        .post(UPLOAD_FILE_ROUTE, formData, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          if (res.status === 200 && res.data) {
+            if (selectedChatType === "contact") {
+              socket.emit("sendMessage", {
+                sender: userInfo._id,
+                content: undefined,
+                reciever: selectedChatData._id,
+                type: "file",
+                fileUrl: res.data.fileUrl,
+              });
+            }
+          }
+        })
+        .catch((err) => {
+          const msg = err.response?.data;
+          toast.error(msg);
+        });
+    }
+  };
+
   return (
     <div className="h-[10vh] bg-zinc-900 flex justify-center items-center px-8 mb-3 gap-5">
       <div className="flex-1 flex bg-zinc-800 rounded-full items-center gap-5 pr-5">
@@ -58,9 +100,20 @@ const MessageBar = () => {
             setMessage(e.target.value);
           }}
         />
-        <button className="text-2xl text-zinc-500 focus:text-zinc-100 transition-all duration-300 cursor-pointer">
+        <button
+          className="text-2xl text-zinc-500 focus:text-zinc-100 transition-all duration-300 cursor-pointer"
+          onClick={handleFileClick}
+        >
           <IoAttach />
         </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          className="hidden"
+          onChange={(e) => {
+            handleFileChange(e);
+          }}
+        />
         <div className="relative">
           <div className="flex items-center">
             <button
