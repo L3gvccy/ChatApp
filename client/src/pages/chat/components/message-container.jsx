@@ -1,6 +1,7 @@
 import { apiClient } from "@/lib/api-client";
+import { getFileName } from "@/lib/utils";
 import { useAppStore } from "@/store";
-import { GET_MESSAGES_ROUTE } from "@/utils/constants";
+import { DOWNLOAD_FILE_ROUTE, GET_MESSAGES_ROUTE } from "@/utils/constants";
 import moment from "moment";
 import React, { useRef, useEffect } from "react";
 import { FaFile, FaDownload } from "react-icons/fa6";
@@ -18,6 +19,42 @@ const MessageContainer = () => {
   const checkIfImage = (file) => {
     const imgRegex = /\.(jpg|jpeg|png|gif|bmp|svg|webp)$/i;
     return imgRegex.test(file);
+  };
+
+  const handleFileSave = async (fileUrl) => {
+    if (!fileUrl) return;
+
+    try {
+      const response = await apiClient.get(DOWNLOAD_FILE_ROUTE, {
+        params: { url: fileUrl },
+        responseType: "blob",
+        withCredentials: true,
+      });
+
+      let fileName = fileUrl.split("/").pop().split("?")[0];
+
+      if (!fileName.includes(".")) {
+        const mimeType = response.headers["content-type"];
+        const ext = mimeType ? mimeType.split("/")[1] : "bin";
+        fileName = `${fileName}.${ext}`;
+      }
+
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"],
+      });
+      const downloadUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = downloadUrl;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      URL.revokeObjectURL(downloadUrl);
+    } catch (err) {
+      console.error("Download error:", err);
+    }
   };
 
   const renderMessages = () => {
@@ -66,7 +103,12 @@ const MessageContainer = () => {
           } border inline-block px-4 py-2 rounded-t-2xl my-1 max-w-[50%] wrap-break-word`}
         >
           {checkIfImage(message.fileUrl) ? (
-            <div className="cursor-pointer">
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                handleFileSave(message.fileUrl);
+              }}
+            >
               <img src={message.fileUrl} className="w-full" />
             </div>
           ) : (
@@ -75,7 +117,12 @@ const MessageContainer = () => {
                 <FaFile />
               </span>
               <span className=" p-2">{message.fileUrl.split("/").pop()}</span>
-              <span className=" cursor-pointer text-xl rounded-full p-2 bg-white/30 hover:bg-white/40">
+              <span
+                className=" cursor-pointer text-xl rounded-full p-2 bg-white/30 hover:bg-white/40"
+                onClick={() => {
+                  handleFileSave(message.fileUrl);
+                }}
+              >
                 <FaDownload />
               </span>
             </div>

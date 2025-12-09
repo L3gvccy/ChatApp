@@ -24,3 +24,7 @@ export const animationDefaultOptions = {
   autoplay: true,
   animationData,
 };
+
+export const getFileName = (fileUrl) => {
+  return fileUrl.split("/").pop().split("?")[0];
+};

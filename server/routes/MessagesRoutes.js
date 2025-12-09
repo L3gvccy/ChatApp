@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { getMessages, uploadFile } from "../controllers/MessagesController.js";
+import {
+  downloadFile,
+  getMessages,
+  uploadFile,
+} from "../controllers/MessagesController.js";
 import { verifyToken } from "../middlewares/AuthMiddleware.js";
 import multer from "multer";
 
@@ -14,5 +18,6 @@ messagesRoutes.post(
   verifyToken,
   uploadFile
 );
+messagesRoutes.get("/download-file", verifyToken, downloadFile);
 
 export default messagesRoutes;

@@ -7,7 +7,7 @@ import { IoClose } from "react-icons/io5";
 const ChatHeader = () => {
   const { selectedChatData, closeChat } = useAppStore();
   return (
-    <div className="flex items-center justify-between h-[10vh] border-b-2 border-zinc-800 px-20">
+    <div className="flex items-center justify-between h-[10vh] border-b-2 border-zinc-800 px-8">
       <div className="flex w-full items-center justify-between">
         <div className="flex gap-3 items-center justify-center">
           <Avatar className="h-10 w-10 rounded-full overflow-hidden ">
