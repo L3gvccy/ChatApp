@@ -7,9 +7,11 @@ import { getColor } from "@/lib/utils";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { useAppStore } from "@/store";
+import { useSocket } from "@/context/SocketContext";
+import NewChannel from "./new-channel";
 
 const ContactsContainer = () => {
-  const [contactsDM, setContactsDM] = useState([]);
+  const socket = useSocket();
   const {
     selectedChatData,
     selectedChatMessages,
@@ -54,7 +56,7 @@ const ContactsContainer = () => {
           <NewDM />
         </div>
         {directMessagesContacts.map((contact, i) => (
-          <div className="flex w-full px-4 mb-2">
+          <div className="flex w-full px-4 mb-2" key={contact._id}>
             <div
               key={i}
               className={`flex w-full gap-5  rounded-lg cursor-pointer p-3 ${
@@ -99,6 +101,7 @@ const ContactsContainer = () => {
       <div className="my-5">
         <div className="flex items-center justify-between pr-10">
           <Title text="Групові чати" />
+          <NewChannel />
         </div>
       </div>
       <ProfileInfo />

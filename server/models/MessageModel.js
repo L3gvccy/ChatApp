@@ -11,6 +11,11 @@ const messageSchema = new mongoose.Schema({
     ref: "Users",
     required: false,
   },
+  channel: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Channels",
+    required: false,
+  },
   type: {
     type: String,
     enum: ["text", "file"],
