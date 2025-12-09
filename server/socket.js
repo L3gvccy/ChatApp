@@ -1,5 +1,6 @@
 import { Server as SocketIoServer } from "socket.io";
 import Message from "./models/MessageModel.js";
+import Channel from "./models/ChannelModel.js";
 
 const setupSocket = (server) => {
   const io = new SocketIoServer(server, {
@@ -40,6 +41,23 @@ const setupSocket = (server) => {
     }
   };
 
+  const createChannel = async (channel) => {
+    const ownerSocketId = userSocketMap.get(channel.owner);
+    const members = channel.members;
+
+    const createdChannel = await Channel.create(channel);
+
+    if (ownerSocketId) {
+      io.to(ownerSocketId).emit("channelCreated", createdChannel);
+    }
+
+    members.forEach((member) => {
+      const memberSocketId = userSocketMap.get(member);
+
+      io.to(memberSocketId).emit("channelCreated", createdChannel);
+    });
+  };
+
   io.on("connection", (socket) => {
     const userId = socket.handshake.query.userId;
 
@@ -51,6 +69,7 @@ const setupSocket = (server) => {
     }
 
     socket.on("sendMessage", sendMessage);
+    socket.on("createChannel", createChannel);
     socket.on("disconnect", () => disconnect(socket));
   });
 };
