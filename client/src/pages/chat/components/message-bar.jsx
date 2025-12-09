@@ -89,12 +89,12 @@ const MessageBar = () => {
   };
 
   return (
-    <div className="h-[10vh] bg-zinc-900 flex justify-center items-center px-8 mb-3 gap-5">
-      <div className="flex-1 flex bg-zinc-800 rounded-full items-center gap-5 pr-5">
+    <div className="h-[10vh] bg-zinc-900 flex justify-center items-center px-8 mb-3 gap-2 md:gap-5">
+      <div className="flex-1 flex bg-zinc-800 rounded-full items-center gap-1 md:gap-5 pr-5">
         <input
           type="text"
           placeholder="Введіть повідомлення"
-          className="flex-1 px-5 py-3 bg-transparent rounded-full focus:border-none focus:outline-none"
+          className="flex-1 px-5 py-3 pr-0 bg-transparent rounded-full focus:border-none focus:outline-none"
           value={message}
           onChange={(e) => {
             setMessage(e.target.value);
