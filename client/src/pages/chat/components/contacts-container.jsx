@@ -18,6 +18,7 @@ const ContactsContainer = () => {
     channelContacts,
     setSelectedChatType,
     setSelectedChatData,
+    setSelectedChatMessages,
     setChannelContacts,
     setDirectMessagesContacts,
   } = useAppStore();
@@ -59,6 +60,7 @@ const ContactsContainer = () => {
   };
 
   const handleChooseChannel = async (channel) => {
+    setSelectedChatMessages([]);
     setSelectedChatType("channel");
     setSelectedChatData(channel);
   };

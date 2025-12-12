@@ -77,7 +77,9 @@ const MessageContainer = () => {
           )}
           {selectedChatType === "contact" && renderDMMessages(message)}
 
-          {selectedChatType === "channel" && renderChannelMessages(message)}
+          {selectedChatType === "channel" &&
+            selectedChatMessages.length > 0 &&
+            renderChannelMessages(message)}
         </div>
       );
     });
@@ -116,7 +118,10 @@ const MessageContainer = () => {
                 handleFileSave(message.fileUrl);
               }}
             >
-              <img src={message.fileUrl} className="w-full" />
+              <img
+                src={message.fileUrl}
+                className="w-full max-w-[320px] max-h-80"
+              />
             </div>
           ) : (
             <div className="flex justify-between items-center">
@@ -209,7 +214,10 @@ const MessageContainer = () => {
                   handleFileSave(message.fileUrl);
                 }}
               >
-                <img src={message.fileUrl} className="w-full" />
+                <img
+                  src={message.fileUrl}
+                  className="w-full max-w-[320px] max-h-80"
+                />
               </div>
             ) : (
               <div className="flex justify-between items-center">
