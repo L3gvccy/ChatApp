@@ -25,6 +25,25 @@ export const getMessages = async (req, res, next) => {
   }
 };
 
+export const getChannelMessages = async (req, res, next) => {
+  try {
+    const channelId = req.body.channelId;
+
+    if (!channelId) {
+      return res.status(400).send("Немає ID каналу");
+    }
+
+    const messages = await Message.find({ channel: channelId })
+      .sort({ timestamp: 1 })
+      .populate("sender", "id email firstName lastName image color");
+
+    return res.status(200).json({ messages });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Помилка сервара");
+  }
+};
+
 export const uploadFile = async (req, res, next) => {
   try {
     if (!req.file) {

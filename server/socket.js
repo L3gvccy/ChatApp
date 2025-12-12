@@ -41,6 +41,31 @@ const setupSocket = (server) => {
     }
   };
 
+  const sendChannelMessage = async (message) => {
+    const senderSocketId = userSocketMap.get(message.sender);
+    const channel = await Channel.findById(message.channel);
+
+    const createdMessage = await Message.create(message);
+
+    const messageData = await Message.findById(createdMessage._id).populate(
+      "sender",
+      "id email firstName lastName image color"
+    );
+
+    if (senderSocketId) {
+      io.to(senderSocketId).emit("recieveMessage", messageData);
+    }
+
+    channel.members.forEach((member) => {
+      if (member.toString() !== message.sender) {
+        const memberSocketId = userSocketMap.get(member.toString());
+        if (memberSocketId) {
+          io.to(memberSocketId).emit("recieveMessage", messageData);
+        }
+      }
+    });
+  };
+
   const createChannel = async (channel) => {
     const ownerSocketId = userSocketMap.get(channel.owner);
     const members = channel.members;
@@ -69,6 +94,7 @@ const setupSocket = (server) => {
     }
 
     socket.on("sendMessage", sendMessage);
+    socket.on("sendChannelMessage", sendChannelMessage);
     socket.on("createChannel", createChannel);
     socket.on("disconnect", () => disconnect(socket));
   });

@@ -4,6 +4,6 @@ import { getAllChannels } from "../controllers/ChannelController.js";
 
 const channelRoutes = Router();
 
-channelRoutes.post("/get-channels", verifyToken, getAllChannels);
+channelRoutes.get("/get-channels", verifyToken, getAllChannels);
 
 export default channelRoutes;

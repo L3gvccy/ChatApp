@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   downloadFile,
+  getChannelMessages,
   getMessages,
   uploadFile,
 } from "../controllers/MessagesController.js";
@@ -12,6 +13,7 @@ const messagesRoutes = Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
 messagesRoutes.post("/get-messages", verifyToken, getMessages);
+messagesRoutes.post("/get-channel-messages", verifyToken, getChannelMessages);
 messagesRoutes.post(
   "/upload-file",
   upload.single("file"),

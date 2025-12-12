@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ProfileInfo from "./profile-info";
 import NewDM from "./new-dm";
 import { apiClient } from "@/lib/api-client";
-import { GET_CONTACTS_DM_ROUTE } from "@/utils/constants";
+import { GET_CHANNELS_ROUTE, GET_CONTACTS_DM_ROUTE } from "@/utils/constants";
 import { getColor } from "@/lib/utils";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
@@ -15,8 +15,10 @@ const ContactsContainer = () => {
   const {
     selectedChatData,
     selectedChatMessages,
+    channelContacts,
     setSelectedChatType,
     setSelectedChatData,
+    setChannelContacts,
     setDirectMessagesContacts,
   } = useAppStore();
   const directMessagesContacts = useAppStore(
@@ -29,7 +31,20 @@ const ContactsContainer = () => {
       .then((res) => {
         if (res.status === 200) {
           setDirectMessagesContacts(res.data.contacts);
-          console.log(res.data.contacts);
+        }
+      })
+      .catch((err) => {
+        const msg = err.response?.data;
+        toast.error(msg);
+      });
+  };
+
+  const getContactsChannel = async () => {
+    apiClient
+      .get(GET_CHANNELS_ROUTE, { withCredentials: true })
+      .then((res) => {
+        if (res.status === 200) {
+          setChannelContacts(res.data.channels);
         }
       })
       .catch((err) => {
@@ -43,8 +58,14 @@ const ContactsContainer = () => {
     setSelectedChatData(contact);
   };
 
+  const handleChooseChannel = async (channel) => {
+    setSelectedChatType("channel");
+    setSelectedChatData(channel);
+  };
+
   useEffect(() => {
     getContactsDM();
+    getContactsChannel();
   }, []);
 
   return (
@@ -99,10 +120,47 @@ const ContactsContainer = () => {
         ))}
       </div>
       <div className="my-5">
-        <div className="flex items-center justify-between pr-10">
+        <div className="flex items-center justify-between pr-10 mb-5">
           <Title text="Групові чати" />
           <NewChannel />
         </div>
+
+        {channelContacts.map((channel, i) => (
+          <div className="flex w-full px-4 mb-2" key={channel._id}>
+            <div
+              key={i}
+              className={`flex w-full gap-5  rounded-lg cursor-pointer p-3 ${
+                selectedChatData?._id === channel._id
+                  ? "bg-purple-800 hover:bg-purple-700"
+                  : "bg-zinc-900 hover:bg-zinc-800"
+              }`}
+              onClick={() => {
+                handleChooseChannel(channel);
+              }}
+            >
+              <Avatar className="h-12 w-12 rounded-full overflow-hidden ">
+                {channel.image ? (
+                  <AvatarImage
+                    src={channel.image}
+                    alt="Фото профілю"
+                    className="object-cover w-full h-full bg-black"
+                  />
+                ) : (
+                  <div
+                    className={`uppercase h-12 w-12 text-2xl rounded-full flex justify-center items-center ${getColor(
+                      channel.color
+                    )}`}
+                  >
+                    {channel.name.split("").shift()}
+                  </div>
+                )}
+              </Avatar>
+              <div className="flex flex-1 flex-col justify-center text-zinc-300">
+                <p className="text-md">{channel.name}</p>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
       <ProfileInfo />
     </div>

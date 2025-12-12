@@ -31,27 +31,38 @@ export const SocketProvider = ({ children }) => {
           selectedChatType,
           selectedChatData,
           addMessage,
-          directMessagesContacts,
           setDirectMessagesContacts,
         } = useAppStore.getState();
 
         if (
-          selectedChatType != undefined &&
+          selectedChatType == "contact" &&
           (selectedChatData._id === message.sender._id ||
             selectedChatData._id === message.reciever._id)
         ) {
           addMessage(message);
+
+          const res = await apiClient.get(GET_CONTACTS_DM_ROUTE, {
+            withCredentials: true,
+          });
+
+          res.data.contacts.length > 0 &&
+            setDirectMessagesContacts(res.data.contacts);
+        } else if (
+          selectedChatType == "channel" &&
+          selectedChatData._id === message.channel
+        ) {
+          addMessage(message);
         }
+      };
 
-        const res = await apiClient.get(GET_CONTACTS_DM_ROUTE, {
-          withCredentials: true,
-        });
+      const handleAddChannel = (channel) => {
+        const { channelContacts, setChannelContacts } = useAppStore.getState();
 
-        res.data.contacts.length > 0 &&
-          setDirectMessagesContacts(res.data.contacts);
+        setChannelContacts([...channelContacts, channel]);
       };
 
       socket.current.on("recieveMessage", handleRecieveMessage);
+      socket.current.on("channelCreated", handleAddChannel);
 
       return () => {
         socket.current.disconnect();

@@ -120,7 +120,10 @@ const NewChannel = () => {
           <ScrollArea className="flex gap-2 h-20">
             {selectedContacts.length > 0 ? (
               selectedContacts.map((contact) => (
-                <div className="inline-block me-2 mb-2 p-2 rounded-md border border-zinc-300">
+                <div
+                  className="inline-block me-2 mb-2 p-2 rounded-md border border-zinc-300"
+                  key={contact._id}
+                >
                   <div className="flex items-center gap-2">
                     <Avatar className="h-6 w-6 rounded-full overflow-hidden ">
                       {contact.image ? (

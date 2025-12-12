@@ -10,6 +10,14 @@ const channelSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  color: {
+    type: Number,
+    default: 0,
+  },
+  image: {
+    type: String,
+    default: null,
+  },
   members: [
     {
       type: mongoose.Schema.Types.ObjectId,
