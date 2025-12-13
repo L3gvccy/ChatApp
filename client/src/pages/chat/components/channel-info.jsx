@@ -9,20 +9,24 @@ import { apiClient } from "@/lib/api-client";
 import { getColor } from "@/lib/utils";
 import { useAppStore } from "@/store";
 import {
+  DELETE_CHANNEL,
   DELETE_CHANNEL_IMAGE,
   UPDATE_CHANNEL_NAME,
   UPLOAD_CHANNEL_IMAGE,
 } from "@/utils/constants";
-import React, { useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { IoAddOutline, IoPencil, IoTrash } from "react-icons/io5";
+import { IoAddOutline, IoPencil, IoPersonAdd, IoTrash } from "react-icons/io5";
 import { IoMdClose, IoMdCheckmark } from "react-icons/io";
 import { toast } from "sonner";
 import { useSocket } from "@/context/SocketContext";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import ChannelMember from "./channel-member";
+import AddChannelMember from "./add-channel-member";
 
 const ChannelInfo = (props) => {
   const { isOwner } = props;
-  const { selectedChatData, setSelectedChatData } = useAppStore();
+  const { selectedChatData } = useAppStore();
   const socket = useSocket();
   const fileInputRef = useRef();
   const [hovered, setHovered] = useState(false);
@@ -105,6 +109,42 @@ const ChannelInfo = (props) => {
       });
   };
 
+  const handleChannelDelete = async () => {
+    try {
+      await apiClient
+        .post(
+          DELETE_CHANNEL,
+          { channel: selectedChatData },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            toast.success(res.data.msg);
+            socket.emit(
+              "deleteChannel",
+              selectedChatData._id,
+              selectedChatData.owner,
+              selectedChatData.members
+            );
+            setModalOpen(false);
+          }
+        })
+        .catch((err) => {
+          const msg = err.response?.data;
+          toast.error(msg);
+        });
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    console.log(selectedChatData);
+  }, []);
+
+  useEffect(() => {
+    setEditingName(false);
+    setNewChannelName(selectedChatData.name);
+  }, [modalOpen]);
+
   return (
     <>
       <button
@@ -115,8 +155,8 @@ const ChannelInfo = (props) => {
       >
         <HiOutlineDotsVertical />
       </button>
-      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="bg-zinc-900 border-0 text-zinc-100 w-[90vw] max-w-[400px] h-[80vh] flex flex-col gap-5">
+      <Dialog open={modalOpen} onOpenChange={setModalOpen} className="min-h-0">
+        <DialogContent className="bg-zinc-900 border-0 text-zinc-100 w-[90vw] max-w-[400px] min-h-0 h-[80vh] flex flex-col gap-5">
           <DialogHeader>
             <DialogTitle className="text-center">
               {isOwner ? "Налаштування каналу" : "Інформація про канал"}
@@ -217,6 +257,38 @@ const ChannelInfo = (props) => {
               )}
             </div>
           </div>
+          <div className="flex-1 flex flex-col gap-2 min-h-0">
+            {isOwner && <AddChannelMember />}
+            <div className="text-center text-zinc-300">Учасники:</div>
+            <ScrollArea className="flex-1 min-h-0">
+              <ChannelMember
+                isOwner={isOwner}
+                ownerId={selectedChatData.owner._id}
+                member={selectedChatData.owner}
+              />
+              {selectedChatData.members.map((member, i) => (
+                <ChannelMember
+                  isOwner={isOwner}
+                  ownerId={selectedChatData.owner._id}
+                  member={member}
+                  key={i}
+                />
+              ))}
+            </ScrollArea>
+          </div>
+          {isOwner ? (
+            <button
+              className="flex items-center gap-2 w-full text-md rounded-lg p-3 cursor-pointer bg-red-700 hover:bg-red-600 active:bg-red-800 transition-all duration-300"
+              onClick={handleChannelDelete}
+            >
+              <IoTrash className="inline mr-2" />
+              Видалити канал
+            </button>
+          ) : (
+            <div className="text-center text-red-600">
+              Вихід з каналу наразі недоступний
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </>

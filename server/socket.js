@@ -42,23 +42,35 @@ const setupSocket = (server) => {
   };
 
   const sendChannelMessage = async (message) => {
-    const senderSocketId = userSocketMap.get(message.sender);
-    const channel = await Channel.findById(message.channel);
+    const senderSocketId = userSocketMap.get(message.sender.toString());
+
+    const channel = await Channel.findById(message.channel)
+      .populate("owner", "_id")
+      .populate("members", "_id");
+
+    const ownerSocketId = userSocketMap.get(channel.owner._id.toString());
 
     const createdMessage = await Message.create(message);
 
     const messageData = await Message.findById(createdMessage._id).populate(
       "sender",
-      "id email firstName lastName image color"
+      "_id email firstName lastName image color"
     );
 
     if (senderSocketId) {
       io.to(senderSocketId).emit("recieveMessage", messageData);
     }
 
+    if (
+      ownerSocketId &&
+      channel.owner._id.toString() !== message.sender.toString()
+    ) {
+      io.to(ownerSocketId).emit("recieveMessage", messageData);
+    }
+
     channel.members.forEach((member) => {
-      if (member.toString() !== message.sender) {
-        const memberSocketId = userSocketMap.get(member.toString());
+      if (member._id.toString() !== message.sender.toString()) {
+        const memberSocketId = userSocketMap.get(member._id.toString());
         if (memberSocketId) {
           io.to(memberSocketId).emit("recieveMessage", messageData);
         }
@@ -70,7 +82,11 @@ const setupSocket = (server) => {
     const ownerSocketId = userSocketMap.get(channel.owner);
     const members = channel.members;
 
-    const createdChannel = await Channel.create(channel);
+    let createdChannel = await Channel.create(channel);
+
+    createdChannel = await Channel.findById(createdChannel._id)
+      .populate("owner", "_id firstName lastName email color image")
+      .populate("members", "_id firstName lastName email color image");
 
     if (ownerSocketId) {
       io.to(ownerSocketId).emit("channelCreated", createdChannel);
@@ -84,16 +100,27 @@ const setupSocket = (server) => {
   };
 
   const updateChannel = async (channel) => {
-    const ownerSocketId = userSocketMap.get(channel.owner);
+    const ownerSocketId = userSocketMap.get(channel.owner._id);
     const members = channel.members;
 
     if (ownerSocketId) {
       io.to(ownerSocketId).emit("channelUpdated", channel);
     }
     members.forEach((member) => {
-      const memberSocketId = userSocketMap.get(member);
+      const memberSocketId = userSocketMap.get(member._id);
 
       io.to(memberSocketId).emit("channelUpdated", channel);
+    });
+  };
+
+  const deleteChannel = async (channelId, owner, members) => {
+    const ownerSocketId = userSocketMap.get(owner._id);
+    if (ownerSocketId) {
+      io.to(ownerSocketId).emit("channelDeleted", channelId);
+    }
+    members.forEach((member) => {
+      const memberSocketId = userSocketMap.get(member._id);
+      io.to(memberSocketId).emit("channelDeleted", channelId);
     });
   };
 
@@ -111,6 +138,7 @@ const setupSocket = (server) => {
     socket.on("sendChannelMessage", sendChannelMessage);
     socket.on("createChannel", createChannel);
     socket.on("updateChannel", updateChannel);
+    socket.on("deleteChannel", deleteChannel);
     socket.on("disconnect", () => disconnect(socket));
   });
 };

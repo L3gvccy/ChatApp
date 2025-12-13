@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { verifyToken } from "../middlewares/AuthMiddleware.js";
 import {
+  addChannelMember,
+  deleteChannel,
   deleteChannelImage,
   getAllChannels,
   updateChannelName,
@@ -21,5 +23,7 @@ channelRoutes.post(
 );
 channelRoutes.post("/delete-channel-image", verifyToken, deleteChannelImage);
 channelRoutes.post("/update-channel-name", verifyToken, updateChannelName);
+channelRoutes.post("/add-channel-member", verifyToken, addChannelMember);
+channelRoutes.post("/delete-channel", verifyToken, deleteChannel);
 
 export default channelRoutes;

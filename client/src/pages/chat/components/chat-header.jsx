@@ -52,9 +52,11 @@ const ChatHeader = () => {
           )}
         </div>
         <div className="flex">
-          {console.log(selectedChatData.owner === userInfo._id)}
           {selectedChatType === "channel" && (
-            <ChannelInfo isOwner={selectedChatData.owner === userInfo._id} />
+            <ChannelInfo
+              isOwner={selectedChatData.owner._id === userInfo._id}
+              data={selectedChatData}
+            />
           )}
           <button
             className="text-zinc-500 focus:text-zinc-100 transition-all duration-300 text-3xl cursor-pointer"

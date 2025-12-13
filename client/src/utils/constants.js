@@ -26,3 +26,5 @@ export const GET_CHANNELS_ROUTE = `${CHANNEL_ROUTES}/get-channels`;
 export const UPLOAD_CHANNEL_IMAGE = `${CHANNEL_ROUTES}/upload-channel-image`;
 export const DELETE_CHANNEL_IMAGE = `${CHANNEL_ROUTES}/delete-channel-image`;
 export const UPDATE_CHANNEL_NAME = `${CHANNEL_ROUTES}/update-channel-name`;
+export const ADD_CHANNEL_MEMBER = `${CHANNEL_ROUTES}/add-channel-member`;
+export const DELETE_CHANNEL = `${CHANNEL_ROUTES}/delete-channel`;

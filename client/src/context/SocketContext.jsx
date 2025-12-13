@@ -68,6 +68,12 @@ export const SocketProvider = ({ children }) => {
           selectedChatData,
           setSelectedChatData,
         } = useAppStore.getState();
+
+        if (!channelContacts.some((c) => c._id === channel._id)) {
+          setChannelContacts([...channelContacts, channel]);
+          return;
+        }
+
         const updatedChannels = channelContacts.map((c) => {
           if (c._id === channel._id) {
             return channel;
@@ -80,9 +86,28 @@ export const SocketProvider = ({ children }) => {
         }
       };
 
+      const handleChannelDeleted = (channelId) => {
+        const {
+          channelContacts,
+          setChannelContacts,
+          selectedChatData,
+          setSelectedChatData,
+          setSelectedChatType,
+        } = useAppStore.getState();
+        const updatedChannels = channelContacts.filter(
+          (c) => c._id !== channelId
+        );
+        setChannelContacts(updatedChannels);
+        if (selectedChatData._id === channelId) {
+          setSelectedChatData(null);
+          setSelectedChatType(null);
+        }
+      };
+
       socket.current.on("recieveMessage", handleRecieveMessage);
       socket.current.on("channelCreated", handleAddChannel);
       socket.current.on("channelUpdated", handleChannelUpdated);
+      socket.current.on("channelDeleted", handleChannelDeleted);
 
       return () => {
         socket.current.disconnect();
