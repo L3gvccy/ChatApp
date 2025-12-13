@@ -82,6 +82,7 @@ const NewChannel = () => {
       owner: userInfo._id,
       name: name,
       members: members,
+      color: Math.floor(Math.random() * 5),
     });
     setNewGroupChatModalOpen(false);
   };

@@ -23,3 +23,6 @@ export const DOWNLOAD_FILE_ROUTE = `${MESSAGES_ROUTES}/download-file`;
 
 export const CHANNEL_ROUTES = "/api/channels";
 export const GET_CHANNELS_ROUTE = `${CHANNEL_ROUTES}/get-channels`;
+export const UPLOAD_CHANNEL_IMAGE = `${CHANNEL_ROUTES}/upload-channel-image`;
+export const DELETE_CHANNEL_IMAGE = `${CHANNEL_ROUTES}/delete-channel-image`;
+export const UPDATE_CHANNEL_NAME = `${CHANNEL_ROUTES}/update-channel-name`;

@@ -2,9 +2,9 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { getColor } from "@/lib/utils";
 import { useAppStore } from "@/store";
 import React from "react";
-import { IoClose, IoSettingsSharp } from "react-icons/io5";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import { IoClose } from "react-icons/io5";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import ChannelInfo from "./channel-info";
 
 const ChatHeader = () => {
   const { userInfo, selectedChatType, selectedChatData, closeChat } =
@@ -52,13 +52,10 @@ const ChatHeader = () => {
           )}
         </div>
         <div className="flex">
-          {console.log(selectedChatData)}
-          {selectedChatData.owner === userInfo._id &&
-            selectedChatType === "channel" && (
-              <button className="text-zinc-500 focus:text-zinc-100 transition-all duration-300 text-2xl mr-5 cursor-pointer">
-                <HiOutlineDotsVertical />
-              </button>
-            )}
+          {console.log(selectedChatData.owner === userInfo._id)}
+          {selectedChatType === "channel" && (
+            <ChannelInfo isOwner={selectedChatData.owner === userInfo._id} />
+          )}
           <button
             className="text-zinc-500 focus:text-zinc-100 transition-all duration-300 text-3xl cursor-pointer"
             onClick={closeChat}

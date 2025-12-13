@@ -13,7 +13,6 @@ import NewChannel from "./new-channel";
 const ContactsContainer = () => {
   const socket = useSocket();
   const {
-    selectedChatData,
     selectedChatMessages,
     channelContacts,
     setSelectedChatType,
@@ -25,6 +24,7 @@ const ContactsContainer = () => {
   const directMessagesContacts = useAppStore(
     (state) => state.directMessagesContacts
   );
+  const selectedChatData = useAppStore((state) => state.selectedChatData);
 
   const getContactsDM = async () => {
     apiClient
