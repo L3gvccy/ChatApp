@@ -23,6 +23,7 @@ import { useSocket } from "@/context/SocketContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ChannelMember from "./channel-member";
 import AddChannelMember from "./add-channel-member";
+import ConfirmAction from "./confirm-action";
 
 const ChannelInfo = (props) => {
   const { isOwner } = props;
@@ -33,6 +34,9 @@ const ChannelInfo = (props) => {
   const [editingName, setEditingName] = useState(false);
   const [newChannelName, setNewChannelName] = useState(selectedChatData.name);
   const [modalOpen, setModalOpen] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
 
   const handleFileInputClick = () => {
     fileInputRef.current.click();
@@ -109,6 +113,12 @@ const ChannelInfo = (props) => {
       });
   };
 
+  const handleChannelDeleteClick = () => {
+    setConfirmText("Ви впевнені, що хочете видалити цей канал?");
+    setConfirmOpen(true);
+    setConfirmAction(() => handleChannelDelete);
+  };
+
   const handleChannelDelete = async () => {
     try {
       await apiClient
@@ -156,7 +166,7 @@ const ChannelInfo = (props) => {
         <HiOutlineDotsVertical />
       </button>
       <Dialog open={modalOpen} onOpenChange={setModalOpen} className="min-h-0">
-        <DialogContent className="bg-zinc-900 border-0 text-zinc-100 w-[90vw] max-w-[400px] min-h-0 h-[80vh] flex flex-col gap-5">
+        <DialogContent className="bg-zinc-900 border-0 text-zinc-100 w-[90vw] max-w-[400px] min-h-0 h-[90vh] flex flex-col gap-5">
           <DialogHeader>
             <DialogTitle className="text-center">
               {isOwner ? "Налаштування каналу" : "Інформація про канал"}
@@ -279,7 +289,7 @@ const ChannelInfo = (props) => {
           {isOwner ? (
             <button
               className="flex items-center gap-2 w-full text-md rounded-lg p-3 cursor-pointer bg-red-700 hover:bg-red-600 active:bg-red-800 transition-all duration-300"
-              onClick={handleChannelDelete}
+              onClick={handleChannelDeleteClick}
             >
               <IoTrash className="inline mr-2" />
               Видалити канал
@@ -291,6 +301,12 @@ const ChannelInfo = (props) => {
           )}
         </DialogContent>
       </Dialog>
+      <ConfirmAction
+        open={confirmOpen}
+        setOpen={setConfirmOpen}
+        onConfirm={confirmAction}
+        text={confirmText}
+      />
     </>
   );
 };
