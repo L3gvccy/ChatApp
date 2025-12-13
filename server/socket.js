@@ -83,6 +83,20 @@ const setupSocket = (server) => {
     });
   };
 
+  const updateChannel = async (channel) => {
+    const ownerSocketId = userSocketMap.get(channel.owner);
+    const members = channel.members;
+
+    if (ownerSocketId) {
+      io.to(ownerSocketId).emit("channelUpdated", channel);
+    }
+    members.forEach((member) => {
+      const memberSocketId = userSocketMap.get(member);
+
+      io.to(memberSocketId).emit("channelUpdated", channel);
+    });
+  };
+
   io.on("connection", (socket) => {
     const userId = socket.handshake.query.userId;
 
@@ -96,6 +110,7 @@ const setupSocket = (server) => {
     socket.on("sendMessage", sendMessage);
     socket.on("sendChannelMessage", sendChannelMessage);
     socket.on("createChannel", createChannel);
+    socket.on("updateChannel", updateChannel);
     socket.on("disconnect", () => disconnect(socket));
   });
 };

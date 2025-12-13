@@ -18,10 +18,12 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import { IoAddOutline, IoPencil, IoTrash } from "react-icons/io5";
 import { IoMdClose, IoMdCheckmark } from "react-icons/io";
 import { toast } from "sonner";
+import { useSocket } from "@/context/SocketContext";
 
 const ChannelInfo = (props) => {
   const { isOwner } = props;
   const { selectedChatData, setSelectedChatData } = useAppStore();
+  const socket = useSocket();
   const fileInputRef = useRef();
   const [hovered, setHovered] = useState(false);
   const [editingName, setEditingName] = useState(false);
@@ -47,7 +49,7 @@ const ChannelInfo = (props) => {
         .then((res) => {
           if (res.status === 200) {
             toast.success(res.data.msg);
-            setSelectedChatData(res.data.channel);
+            socket.emit("updateChannel", res.data.channel);
           }
         })
         .catch((err) => {
@@ -67,7 +69,7 @@ const ChannelInfo = (props) => {
       .then((res) => {
         if (res.status === 200) {
           toast.success(res.data.msg);
-          setSelectedChatData(res.data.channel);
+          socket.emit("updateChannel", res.data.channel);
         }
       })
       .catch((err) => {
@@ -93,7 +95,7 @@ const ChannelInfo = (props) => {
       .then((res) => {
         if (res.status === 200) {
           toast.success(res.data.msg);
-          setSelectedChatData(res.data.channel);
+          socket.emit("updateChannel", res.data.channel);
           setEditingName(false);
         }
       })

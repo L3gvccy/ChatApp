@@ -61,8 +61,28 @@ export const SocketProvider = ({ children }) => {
         setChannelContacts([...channelContacts, channel]);
       };
 
+      const handleChannelUpdated = (channel) => {
+        const {
+          channelContacts,
+          setChannelContacts,
+          selectedChatData,
+          setSelectedChatData,
+        } = useAppStore.getState();
+        const updatedChannels = channelContacts.map((c) => {
+          if (c._id === channel._id) {
+            return channel;
+          }
+          return c;
+        });
+        setChannelContacts(updatedChannels);
+        if (selectedChatData._id === channel._id) {
+          setSelectedChatData(channel);
+        }
+      };
+
       socket.current.on("recieveMessage", handleRecieveMessage);
       socket.current.on("channelCreated", handleAddChannel);
+      socket.current.on("channelUpdated", handleChannelUpdated);
 
       return () => {
         socket.current.disconnect();
