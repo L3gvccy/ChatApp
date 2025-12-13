@@ -120,30 +120,28 @@ const ChannelInfo = (props) => {
   };
 
   const handleChannelDelete = async () => {
-    try {
-      await apiClient
-        .post(
-          DELETE_CHANNEL,
-          { channel: selectedChatData },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          if (res.status === 200) {
-            toast.success(res.data.msg);
-            socket.emit(
-              "deleteChannel",
-              selectedChatData._id,
-              selectedChatData.owner,
-              selectedChatData.members
-            );
-            setModalOpen(false);
-          }
-        })
-        .catch((err) => {
-          const msg = err.response?.data;
-          toast.error(msg);
-        });
-    } catch (error) {}
+    await apiClient
+      .post(
+        DELETE_CHANNEL,
+        { channel: selectedChatData },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success(res.data.msg);
+          socket.emit(
+            "deleteChannel",
+            selectedChatData._id,
+            selectedChatData.owner,
+            selectedChatData.members
+          );
+          setModalOpen(false);
+        }
+      })
+      .catch((err) => {
+        const msg = err.response?.data;
+        toast.error(msg);
+      });
   };
 
   useEffect(() => {
@@ -288,7 +286,7 @@ const ChannelInfo = (props) => {
           </div>
           {isOwner ? (
             <button
-              className="flex items-center gap-2 w-full text-md rounded-lg p-3 cursor-pointer bg-red-700 hover:bg-red-600 active:bg-red-800 transition-all duration-300"
+              className="flex items-center gap-2 w-full text-md rounded-lg p-3 cursor-pointer bg-zinc-700 hover:bg-red-600 active:bg-red-800 transition-all duration-300"
               onClick={handleChannelDeleteClick}
             >
               <IoTrash className="inline mr-2" />
