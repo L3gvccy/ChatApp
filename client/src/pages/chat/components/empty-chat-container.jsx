@@ -4,7 +4,7 @@ import { animationDefaultOptions } from "@/lib/utils";
 
 const EmptyChatContainer = () => {
   return (
-    <div className="flex-1 md:bg-zinc-900 md:flex flex-col justify-center items-center hidden duration-1000 transition-all">
+    <div className="flex-1 dark:md:bg-zinc-900 md:flex flex-col justify-center items-center hidden duration-1000 transition-transform">
       <Lottie
         isClickToPauseDisabled={true}
         height={200}
@@ -13,7 +13,7 @@ const EmptyChatContainer = () => {
       />
       <div className="text-center roboto-condensed-500">
         <p className="text-purple-500 text-4xl my-5">Привіт!</p>
-        <p className="text-2xl">
+        <p className="text-2xl text-zinc-900 dark:text-zinc-300">
           Раді бачити тебе у <span className="text-purple-500">QChat!</span>
         </p>
       </div>

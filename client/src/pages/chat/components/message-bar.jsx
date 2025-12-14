@@ -15,6 +15,7 @@ const MessageBar = () => {
   const emojiRef = useRef();
   const fileInputRef = useRef();
   const socket = useSocket();
+  const theme = localStorage.getItem("theme");
   const { selectedChatType, selectedChatData, userInfo } = useAppStore();
   const [message, setMessage] = useState("");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
@@ -105,19 +106,19 @@ const MessageBar = () => {
   };
 
   return (
-    <div className="h-[10vh] bg-zinc-900 flex justify-center items-center px-8 mb-3 gap-2 md:gap-5">
-      <div className="flex-1 flex bg-zinc-800 rounded-full items-center gap-1 md:gap-5 pr-5">
+    <div className="h-[10vh] dark:bg-zinc-900 flex justify-center items-center px-8 mb-3 gap-2 md:gap-5">
+      <div className="flex-1 flex bg-zinc-200 dark:bg-zinc-800 rounded-full items-center gap-1 md:gap-5 pr-5">
         <input
           type="text"
           placeholder="Введіть повідомлення"
-          className="flex-1 px-5 py-3 pr-0 bg-transparent rounded-full focus:border-none focus:outline-none"
+          className="flex-1 px-5 py-3 pr-0 bg-transparent rounded-full focus:border-none focus:outline-none text-zinc-700 placeholder:text-zinc-500 dark:text-zinc-200 dark:placeholder:text-zinc-400"
           value={message}
           onChange={(e) => {
             setMessage(e.target.value);
           }}
         />
         <button
-          className="text-2xl text-zinc-500 focus:text-zinc-100 transition-all duration-300 cursor-pointer"
+          className="text-2xl text-zinc-500 focus:text-zinc-900 dark:focus:text-zinc-100 transition-all duration-300 cursor-pointer"
           onClick={handleFileClick}
         >
           <IoAttach />
@@ -133,7 +134,7 @@ const MessageBar = () => {
         <div className="relative">
           <div className="flex items-center">
             <button
-              className=" my-auto text-2xl text-zinc-500 focus:text-zinc-100 transition-all duration-300 cursor-pointer"
+              className=" my-auto text-2xl text-zinc-500 focus:text-zinc-900 dark:focus:text-zinc-100 transition-all duration-300 cursor-pointer"
               onClick={() => {
                 setEmojiPickerOpen((prev) => !prev);
               }}
@@ -143,7 +144,7 @@ const MessageBar = () => {
           </div>
           <div ref={emojiRef} className="absolute right-0 bottom-12">
             <EmojiPicker
-              theme="dark"
+              theme={theme === "dark" ? "dark" : "light"}
               open={emojiPickerOpen}
               onEmojiClick={handleAddEmoji}
               autoFocusSearch={false}

@@ -10,6 +10,7 @@ import { useAppStore } from "@/store";
 import { useSocket } from "@/context/SocketContext";
 import NewChannel from "./new-channel";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import ThemeButton from "@/components/theme-button";
 
 const ContactsContainer = () => {
   const {
@@ -73,7 +74,7 @@ const ContactsContainer = () => {
   }, []);
 
   return (
-    <div className="relative md:w-[35vw] lg:w-[30vw] xl:w-[20vw] w-full bg-zinc-900 border-r-2 border-zinc-800">
+    <div className="relative md:w-[35vw] lg:w-[30vw] xl:w-[20vw] w-full border-purple-200 dark:bg-zinc-900 border-r-2 dark:border-zinc-800">
       <Logo />
       <ScrollArea className="h-[80vh]">
         <div className="my-5">
@@ -88,7 +89,7 @@ const ContactsContainer = () => {
                 className={`flex w-full gap-5  rounded-lg cursor-pointer p-3 ${
                   selectedChatData?._id === contact._id
                     ? "bg-purple-800 hover:bg-purple-700"
-                    : "bg-zinc-900 hover:bg-zinc-800"
+                    : "hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800"
                 }`}
                 onClick={() => {
                   handleChooseContact(contact);
@@ -113,7 +114,13 @@ const ContactsContainer = () => {
                     </div>
                   )}
                 </Avatar>
-                <div className="flex flex-1 flex-col justify-center text-zinc-300">
+                <div
+                  className={`flex flex-1 flex-col justify-center dark:text-zinc-300 ${
+                    selectedChatData?._id === contact._id
+                      ? "text-zinc-100"
+                      : "text-zinc-900"
+                  }`}
+                >
                   <p className="text-md">
                     {contact?.firstName
                       ? `${contact.firstName} ${contact.lastName}`
@@ -139,7 +146,7 @@ const ContactsContainer = () => {
                   className={`flex w-full gap-5  rounded-lg cursor-pointer p-3 ${
                     selectedChatData?._id === channel._id
                       ? "bg-purple-800 hover:bg-purple-700"
-                      : "bg-zinc-900 hover:bg-zinc-800"
+                      : "hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800"
                   }`}
                   onClick={() => {
                     handleChooseChannel(channel);
@@ -162,7 +169,13 @@ const ContactsContainer = () => {
                       </div>
                     )}
                   </Avatar>
-                  <div className="flex flex-1 flex-col justify-center text-zinc-300">
+                  <div
+                    className={`flex flex-1 flex-col justify-center dark:text-zinc-300 ${
+                      selectedChatData?._id === channel._id
+                        ? "text-zinc-100"
+                        : "text-zinc-900"
+                    }`}
+                  >
                     <p className="text-md">{channel.name}</p>
                   </div>
                 </div>
@@ -181,17 +194,22 @@ const Logo = () => {
   return (
     <div
       id="logo"
-      className="flex gap-5 text-2xl roboto-condensed-700 text-purple-700 p-4 bg-zinc-800 rounded-b-lg"
+      className="flex justify-between text-2xl roboto-condensed-700 text-purple-700 p-4 bg-purple-200 dark:bg-zinc-800 rounded-b-lg"
     >
-      <img src="/logo.png" alt="" className="w-8 h-8" />
-      <p>QChat</p>
+      <div className="flex gap-5 items-center">
+        <img src="/logo.png" alt="" className="w-8 h-8" />
+        <p>QChat</p>
+      </div>
+      <div>
+        <ThemeButton />
+      </div>
     </div>
   );
 };
 
 const Title = ({ text }) => {
   return (
-    <h6 className="uppercase tracking-widest text-gray-400/90 pl-10 font-light text-sm">
+    <h6 className="uppercase tracking-widest text-gray-900/90 dark:text-gray-400/90 pl-10 font-light text-sm">
       {text}
     </h6>
   );

@@ -144,22 +144,24 @@ export default function Profile() {
   }, []);
 
   return (
-    <div className="bg-zinc-900 h-screen w-screen flex flex-col justify-center items-center gap-5">
+    <div className="dark:bg-zinc-900 h-screen w-screen flex flex-col justify-center items-center gap-5">
       <div className="flex w-[90vw] justify-between">
         <IoArrowBack
-          className="text-4xl text-zinc-300 hover:text-zinc-100 active:text-zinc-400 cursor-pointer"
+          className="text-4xl text-zinc-700 hover:text-zinc-600 active:text-zinc-800 dark:text-zinc-300 dark:hover:text-zinc-100 dark:active:text-zinc-400 cursor-pointer"
           onClick={() => {
             handleNavigate();
           }}
         />
-        <h2 className="text-zinc-100 text-3xl font-semibold">Профіль</h2>
+        <h2 className="text-zinc-800 dark:text-zinc-100 text-3xl font-semibold">
+          Профіль
+        </h2>
         <IoLogOutOutline
-          className="text-4xl text-zinc-300 hover:text-zinc-100 active:text-zinc-400 cursor-pointer"
+          className="text-4xl text-zinc-700 hover:text-zinc-600 active:text-zinc-800 dark:text-zinc-300 dark:hover:text-zinc-100 dark:active:text-zinc-400 cursor-pointer"
           onClick={handleLogout}
         />
       </div>
 
-      <div className="bg-zinc-900 border-2 border-zinc-900 rounded-3xl w-[90vw] max-w-[480px] h-[80vh] shadow-2xl p-6 flex items-center">
+      <div className="dark:bg-zinc-800 rounded-3xl w-[90vw] max-w-[480px] h-[80vh] shadow-2xl p-6 flex items-center">
         <div className="w-full flex flex-col gap-10">
           <div className="flex items-center justify-center">
             <div
@@ -214,7 +216,8 @@ export default function Profile() {
               {colors.map((color, i) => (
                 <div
                   className={`${color} h-8 w-8 rounded-full cursor-pointer transition-all duration-200 ${
-                    i == selectedColor && "outline-2 outline-gray-100/60"
+                    i == selectedColor &&
+                    "outline-3 outline-black/80 dark:outline-gray-100/60"
                   }`}
                   key={i}
                   onClick={() => {
@@ -229,13 +232,13 @@ export default function Profile() {
               type="email"
               disabled
               value={userInfo.email}
-              className="p-6 rounded-lg bg-zinc-600 text-white border-none"
+              className="p-6 rounded-lg bg-zinc-100 dark:bg-zinc-600 dark:text-white border-none"
             />
             <Input
               placeholder="Ім'я"
               type="text"
               value={firstName}
-              className="p-6 rounded-lg bg-zinc-600 placeholder:text-gray-400 text-white border-none"
+              className="p-6 rounded-lg  bg-zinc-100 text-zinc-700 dark:bg-zinc-600 dark:text-white dark:placeholder:text-gray-400 border-none"
               onChange={(e) => {
                 setFirstName(e.target.value);
               }}
@@ -244,7 +247,7 @@ export default function Profile() {
               placeholder="Прізвище"
               type="text"
               value={lastName}
-              className="p-6 rounded-lg bg-zinc-600 placeholder:text-gray-400 text-white border-none"
+              className="p-6 rounded-lg bg-zinc-100 text-zinc-700 dark:bg-zinc-600 dark:text-white dark:placeholder:text-gray-400 border-none"
               onChange={(e) => {
                 setLastName(e.target.value);
               }}

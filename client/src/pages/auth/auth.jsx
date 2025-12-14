@@ -8,6 +8,7 @@ import { apiClient } from "@/lib/api-client";
 import { LOGIN_ROUTE, REGISTER_ROUTE } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store";
+import ThemeButton from "@/components/theme-button";
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -93,8 +94,11 @@ export default function Auth() {
   }, []);
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center">
-      <div className="h-[80vh] bg-white border-2 border-white text-opacity-90 shadow-2xl rounded-3xl w-[90vw] max-w-[640px] grid">
+    <div className="relative h-screen w-screen dark:bg-zinc-900 flex items-center justify-center">
+      <div className="absolute top-4 right-4">
+        <ThemeButton />
+      </div>
+      <div className="h-[80vh] bg-white dark:bg-zinc-800 border-2 border-white dark:border-zinc-800 text-opacity-90 shadow-2xl rounded-3xl w-[90vw] max-w-[640px] grid">
         <div className="flex flex-col gap-10 items-center justify-center">
           <div className="flex flex-col items-center justify-center w-full gap-6">
             <h1 className="text-4xl font-semibold">Вітаємо у QChat!</h1>
@@ -110,13 +114,13 @@ export default function Auth() {
               <TabsList className="bg-transparent rounded-none w-full">
                 <TabsTrigger
                   value="login"
-                  className="data-[state=active]:bg-transparent text-black text-opacity-90 border-0 border-b-2 rounded-none w-full data-[state=active]:font-semibold data-[state=active]:border-b-purple-700 p-3 transition-all duration-300"
+                  className="data-[state=active]:bg-transparent text-black text-opacity-90 border-0 border-b-2 rounded-none w-full data-[state=active]:font-semibold data-[state=active]:border-b-purple-700 dark:data-[state=active]:border-b-purple-700 p-3 transition-all duration-300"
                 >
                   Вхід
                 </TabsTrigger>
                 <TabsTrigger
                   value="register"
-                  className="data-[state=active]:bg-transparent text-black text-opacity-90 border-b-2 rounded-none w-full data-[state=active]:font-semibold data-[state=active]:border-b-purple-700 p-3 transition-all duration-300"
+                  className="data-[state=active]:bg-transparent text-black text-opacity-90 border-b-2 rounded-none w-full data-[state=active]:font-semibold data-[state=active]:border-b-purple-700 dark:data-[state=active]:border-b-purple-700 p-3 transition-all duration-300"
                 >
                   Реєстрація
                 </TabsTrigger>
@@ -138,7 +142,7 @@ export default function Auth() {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                   <Button
-                    className="rounded-xl p-3 bg-purple-700 hover:bg-purple-600 active:bg-purple-800 cursor-pointer"
+                    className="rounded-xl p-3 bg-purple-700 hover:bg-purple-600 active:bg-purple-800 dark:text-zinc-100 cursor-pointer"
                     onClick={handleLogin}
                   >
                     Увійти

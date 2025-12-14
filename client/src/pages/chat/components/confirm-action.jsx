@@ -11,7 +11,7 @@ const ConfirmAction = (props) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="bg-zinc-900 border-0 text-zinc-100 w-[90vw] max-w-[340px] min-h-0 flex flex-col gap-5 p-4">
+      <DialogContent className="dark:bg-zinc-900 border-0 dark:text-zinc-100 w-[90vw] max-w-[340px] min-h-0 flex flex-col gap-5 p-4">
         <DialogHeader>
           <DialogTitle>
             <div className="text-center text-lg font-semibold">

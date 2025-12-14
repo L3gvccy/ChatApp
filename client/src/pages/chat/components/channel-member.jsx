@@ -20,7 +20,7 @@ const ChannelMember = (props) => {
   return (
     <>
       <div
-        className="flex gap-2 items-center justify-center w-full p-3 border-b-2 border-zinc-500"
+        className="flex gap-2 items-center justify-center w-full p-3 border-b-2 border-zinc-200 dark:border-zinc-500"
         key={member._id}
       >
         <Avatar className="h-8 w-8 rounded-full overflow-hidden ">
@@ -43,7 +43,7 @@ const ChannelMember = (props) => {
           )}
         </Avatar>
         <div className="flex flex-1 justify-between items-center">
-          <div className="text-zinc-100">
+          <div className="dark:text-zinc-100">
             {`${member.firstName} ${member.lastName}`}
           </div>
           {ownerId === member._id && (

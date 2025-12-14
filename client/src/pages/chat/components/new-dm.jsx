@@ -78,7 +78,7 @@ const NewDM = () => {
         <TooltipContent>Новий особистий чат</TooltipContent>
       </Tooltip>
       <Dialog open={newDMModalOpen} onOpenChange={setNewDMModalOpen}>
-        <DialogContent className="bg-zinc-900 border-0 text-zinc-100 w-[90vw] max-w-[420px] h-[420px] flex flex-col">
+        <DialogContent className="dark:bg-zinc-900 border-0 dark:text-zinc-100 w-[90vw] max-w-[420px] h-[420px] flex flex-col">
           <DialogHeader>
             <DialogTitle className="text-center">
               Новий особистий чат
@@ -87,7 +87,7 @@ const NewDM = () => {
           <div>
             <Input
               placeholder="Пошук контактів"
-              className="border-none outline-none bg-zinc-800 text-zinc-300 placeholder:text-zinc-400 p-4 my-2 focus-visible:ring-0"
+              className="border-none outline-none dark:bg-zinc-800 dark:text-zinc-300 dark:placeholder:text-zinc-400 p-4 my-2 focus-visible:ring-0"
               value={searchContacts}
               onChange={(e) => {
                 handleSearchContacts(e);
@@ -105,7 +105,7 @@ const NewDM = () => {
                 {contacts.map((contact, i) => (
                   <div
                     key={i}
-                    className="flex w-full gap-5 bg-zinc-900 hover:bg-zinc-800 rounded-xl cursor-pointer p-3"
+                    className="flex w-full gap-5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl cursor-pointer p-3"
                     onClick={() => {
                       handleChooseContact(contact);
                     }}
@@ -129,7 +129,7 @@ const NewDM = () => {
                         </div>
                       )}
                     </Avatar>
-                    <div className="flex flex-1 flex-col text-zinc-300">
+                    <div className="flex flex-1 flex-col text-zinc-800 dark:text-zinc-300">
                       <p className="text-xl">
                         {contact?.firstName} {contact?.lastName}
                       </p>
@@ -139,13 +139,13 @@ const NewDM = () => {
                 ))}
               </ScrollArea>
             ) : (
-              <div className="flex-1 flex flex-col items-center justify-center text-xl text-zinc-300 px-6 text-center gap-5">
+              <div className="flex-1 flex flex-col items-center justify-center text-xl text-zinc-800 dark:text-zinc-300 px-6 text-center gap-5">
                 <FaFaceSadTear className="text-6xl" />
                 <p>За вашим пошуковим запитом не знайдено жодного контакту</p>
               </div>
             )
           ) : (
-            <div className="flex-1 md:bg-zinc-900 flex flex-col justify-center items-center duration-1000 transition-all">
+            <div className="flex-1 dark:bg-zinc-900 flex flex-col justify-center items-center duration-1000 transition-all">
               <Lottie
                 isClickToPauseDisabled={true}
                 height={120}

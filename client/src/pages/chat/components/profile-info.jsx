@@ -50,7 +50,7 @@ const ProfileInfo = () => {
   };
 
   return (
-    <div className="absolute bottom-0 p-4 w-full bg-zinc-800 rounded-t-xl flex items-center justify-between">
+    <div className="absolute bottom-0 p-4 w-full bg-purple-200 dark:bg-zinc-800 rounded-t-xl flex items-center justify-between">
       <div className="flex gap-3">
         <Avatar className="h-8 w-8 rounded-full overflow-hidden ">
           {image ? (
@@ -71,7 +71,9 @@ const ProfileInfo = () => {
             </div>
           )}
         </Avatar>
-        <div className="flex items-center text-sm">{fullName}</div>
+        <div className="flex items-center text-sm text-zinc-900 dark:text-zinc-100">
+          {fullName}
+        </div>
       </div>
       <div className="flex justify-between items-center gap-3 text-xl text-purple-700">
         <Tooltip>

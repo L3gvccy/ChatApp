@@ -5,7 +5,7 @@ import MessageBar from "./message-bar";
 
 const ChatContainer = () => {
   return (
-    <div className="fixed top-0 h-screen w-screen bg-zinc-900 flex flex-col md:static md:flex-1">
+    <div className="fixed top-0 h-screen w-screen bg-white dark:bg-zinc-900 flex flex-col md:static md:flex-1">
       <ChatHeader />
       <MessageContainer />
       <MessageBar />

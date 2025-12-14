@@ -104,7 +104,7 @@ const NewChannel = () => {
         open={newGroupChatModalOpen}
         onOpenChange={setNewGroupChatModalOpen}
       >
-        <DialogContent className="bg-zinc-900 border-0 text-zinc-100 w-[90vw] max-w-[420px] h-[580px] flex flex-col">
+        <DialogContent className="dark:bg-zinc-900 border-0 dark:text-zinc-100 w-[90vw] max-w-[420px] h-[580px] flex flex-col">
           <DialogHeader>
             <DialogTitle className="text-center">
               Новий груповий чат
@@ -112,7 +112,7 @@ const NewChannel = () => {
           </DialogHeader>
           <Input
             placeholder="Назва групового чату"
-            className="border-none outline-none bg-zinc-800 text-zinc-300 placeholder:text-zinc-400 p-4 my-2 focus-visible:ring-0"
+            className="border-none outline-none dark:bg-zinc-800 dark:text-zinc-300 dark:placeholder:text-zinc-400 p-4 my-2 focus-visible:ring-0"
             value={name}
             onChange={(e) => {
               setName(e.target.value);
@@ -122,7 +122,7 @@ const NewChannel = () => {
             {selectedContacts.length > 0 ? (
               selectedContacts.map((contact) => (
                 <div
-                  className="inline-block me-2 mb-2 p-2 rounded-md border border-zinc-300"
+                  className="inline-block mb-2 me-2 p-2 rounded-md border border-zinc-300"
                   key={contact._id}
                 >
                   <div className="flex items-center gap-2">
@@ -162,7 +162,7 @@ const NewChannel = () => {
                 </div>
               ))
             ) : (
-              <div className="h-20 flex items-center justify-center text-zinc-300">
+              <div className="h-20 flex items-center justify-center text-zinc-700 dark:text-zinc-300">
                 Тут будуть відображатись обрані контакти
               </div>
             )}
@@ -171,7 +171,7 @@ const NewChannel = () => {
           <div>
             <Input
               placeholder="Пошук контактів"
-              className="border-none outline-none bg-zinc-800 text-zinc-300 placeholder:text-zinc-400 p-4 my-2 focus-visible:ring-0"
+              className="border-none outline-none dark:bg-zinc-800 dark:text-zinc-300 dark:placeholder:text-zinc-400 p-4 my-2 focus-visible:ring-0"
               value={searchContacts}
               onChange={(e) => {
                 handleSearchContacts(e);
@@ -189,7 +189,7 @@ const NewChannel = () => {
                 {contacts.map((contact, i) => (
                   <div
                     key={i}
-                    className="flex w-full gap-5 bg-zinc-900 hover:bg-zinc-800 rounded-xl cursor-pointer p-3"
+                    className="flex w-full gap-5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl cursor-pointer p-3"
                     onClick={() => {
                       handleChooseContact(contact);
                     }}
@@ -213,7 +213,7 @@ const NewChannel = () => {
                         </div>
                       )}
                     </Avatar>
-                    <div className="flex flex-1 flex-col text-zinc-300">
+                    <div className="flex flex-1 flex-col text-zinc-800 dark:text-zinc-300">
                       <p className="text-xl">
                         {contact?.firstName} {contact?.lastName}
                       </p>
@@ -223,13 +223,13 @@ const NewChannel = () => {
                 ))}
               </ScrollArea>
             ) : (
-              <div className="flex-1 flex flex-col items-center justify-center text-xl text-zinc-300 px-6 text-center gap-5">
+              <div className="flex-1 flex flex-col items-center justify-center text-xl text-zinc-800 dark:text-zinc-300 px-6 text-center gap-5">
                 <FaFaceSadTear className="text-6xl" />
                 <p>За вашим пошуковим запитом не знайдено жодного контакту</p>
               </div>
             )
           ) : (
-            <div className="flex-1 md:bg-zinc-900 flex flex-col justify-center items-center duration-1000 transition-all">
+            <div className="flex-1 dark:bg-zinc-900 flex flex-col justify-center items-center duration-1000 transition-all">
               <Lottie
                 isClickToPauseDisabled={true}
                 height={120}
@@ -245,7 +245,7 @@ const NewChannel = () => {
             </div>
           )}
           <button
-            className="w-full py-2 rounded-lg bg-purple-700 hover:bg-purple-600 active:bg-purple-800 cursor-pointer disabled:cursor-auto disabled:bg-purple-950/90"
+            className="w-full py-2 rounded-lg bg-purple-700 hover:bg-purple-600 active:bg-purple-800 text-zinc-100 cursor-pointer disabled:cursor-auto disabled:bg-purple-950/90"
             disabled={selectedContacts.length < 1 || name.length < 1}
             onClick={createChannel}
           >

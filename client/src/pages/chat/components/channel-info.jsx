@@ -175,7 +175,7 @@ const ChannelInfo = (props) => {
         <HiOutlineDotsVertical />
       </button>
       <Dialog open={modalOpen} onOpenChange={setModalOpen} className="min-h-0">
-        <DialogContent className="bg-zinc-900 border-0 text-zinc-100 w-[90vw] max-w-[400px] min-h-0 h-[90vh] flex flex-col gap-5">
+        <DialogContent className="dark:bg-zinc-900 border-0 dark:text-zinc-100 w-[90vw] max-w-[400px] min-h-0 h-[90vh] flex flex-col gap-5">
           <DialogHeader>
             <DialogTitle className="text-center">
               {isOwner ? "Налаштування каналу" : "Інформація про канал"}
@@ -236,7 +236,7 @@ const ChannelInfo = (props) => {
               {editingName ? (
                 <input
                   type="text"
-                  className="bg-zinc-800 text-zinc-100 p-2 rounded-md outline-none"
+                  className="bg-zinc-100 dark:bg-zinc-800 dark:text-zinc-100 p-2 rounded-md outline-none"
                   value={newChannelName}
                   onChange={(e) => setNewChannelName(e.target.value)}
                 />
@@ -278,7 +278,7 @@ const ChannelInfo = (props) => {
           </div>
           <div className="flex-1 flex flex-col gap-2 min-h-0">
             {isOwner && <AddChannelMember />}
-            <div className="text-center text-zinc-300">Учасники:</div>
+            <div className="text-center dark:text-zinc-300">Учасники:</div>
             <ScrollArea className="flex-1 min-h-0">
               <ChannelMember
                 isOwner={isOwner}
@@ -297,7 +297,7 @@ const ChannelInfo = (props) => {
           </div>
           {isOwner ? (
             <button
-              className="flex items-center gap-2 w-full text-md rounded-lg p-3 cursor-pointer bg-zinc-700 hover:bg-red-600 active:bg-red-800 transition-all duration-300"
+              className="flex items-center gap-2 w-full text-md rounded-lg p-3 cursor-pointer bg-zinc-100 hover:bg-red-600 hover:text-zinc-100 active:bg-red-800 dark:bg-zinc-700 dark:hover:bg-red-600 dark:active:bg-red-800 transition-all duration-300"
               onClick={handleChannelDeleteClick}
             >
               <IoTrash className="inline mr-2" />
@@ -305,7 +305,7 @@ const ChannelInfo = (props) => {
             </button>
           ) : (
             <button
-              className="flex items-center gap-2 w-full text-md rounded-lg p-3 cursor-pointer bg-zinc-700 hover:bg-red-600 active:bg-red-800 transition-all duration-300"
+              className="flex items-center gap-2 w-full text-md rounded-lg p-3 cursor-pointer bg-zinc-100 hover:bg-red-600 hover:text-zinc-100 active:bg-red-800 dark:bg-zinc-700 dark:hover:bg-red-600 dark:active:bg-red-800 transition-all duration-300"
               onClick={handleChannelLeaveClick}
             >
               <BiLogOut className="inline mr-2" />

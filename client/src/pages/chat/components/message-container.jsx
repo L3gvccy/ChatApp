@@ -95,8 +95,8 @@ const MessageContainer = () => {
         <div
           className={`${
             message.sender !== selectedChatData._id
-              ? "bg-purple-700 text-purple-300 border-purple-900/50 rounded-bl-2xl"
-              : "bg-zinc-700 text-zinc-300 border-zinc-900/50 rounded-br-2xl"
+              ? "bg-purple-700 text-purple-100 dark:text-purple-300 border-purple-900/50 rounded-bl-2xl"
+              : "bg-zinc-700 text-zinc-100 dark:text-zinc-300 border-zinc-900/50 rounded-br-2xl"
           } border inline-block px-4 py-2 rounded-t-2xl my-1 max-w-[50%] wrap-break-word`}
         >
           {message.content}
@@ -107,8 +107,8 @@ const MessageContainer = () => {
         <div
           className={`${
             message.sender !== selectedChatData._id
-              ? "bg-purple-700 text-purple-300 border-purple-900/50 rounded-bl-2xl"
-              : "bg-zinc-700 text-zinc-300 border-zinc-900/50 rounded-br-2xl"
+              ? "bg-purple-700 text-purple-100 dark:text-purple-300 border-purple-900/50 rounded-bl-2xl"
+              : "bg-zinc-700 text-zinc-100 dark:text-zinc-300 border-zinc-900/50 rounded-br-2xl"
           } border inline-block px-4 py-2 rounded-t-2xl my-1 max-w-[50%] wrap-break-word`}
         >
           {checkIfImage(message.fileUrl) ? (
@@ -187,8 +187,8 @@ const MessageContainer = () => {
         <div
           className={`${
             message.sender._id === userInfo._id
-              ? "bg-purple-700 text-purple-300 border-purple-900/50 rounded-bl-2xl"
-              : "bg-zinc-700 text-zinc-300 border-zinc-900/50 rounded-br-2xl"
+              ? "bg-purple-700 text-purple-100 dark:text-purple-300 border-purple-900/50 rounded-bl-2xl"
+              : "bg-zinc-700 text-zinc-100 dark:text-zinc-300 border-zinc-900/50 rounded-br-2xl"
           } border inline-block px-4 py-2 rounded-t-2xl my-1 max-w-[50%] wrap-break-word`}
         >
           {message.content}
@@ -199,8 +199,8 @@ const MessageContainer = () => {
         <div
           className={`${
             message.sender._id === userInfo._id
-              ? "bg-purple-700 text-purple-300 border-purple-900/50 rounded-bl-2xl"
-              : "bg-zinc-700 text-zinc-300 border-zinc-900/50 rounded-br-2xl"
+              ? "bg-purple-700 text-purple-100 dark:text-purple-300 border-purple-900/50 rounded-bl-2xl"
+              : "bg-zinc-700 text-zinc-100 dark:text-zinc-300 border-zinc-900/50 rounded-br-2xl"
           } border inline-block px-4 py-2 rounded-t-2xl my-1 max-w-[50%] wrap-break-word`}
         >
           {checkIfImage(message.fileUrl) ? (

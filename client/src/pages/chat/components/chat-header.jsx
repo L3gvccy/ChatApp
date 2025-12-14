@@ -3,14 +3,13 @@ import { getColor } from "@/lib/utils";
 import { useAppStore } from "@/store";
 import React from "react";
 import { IoClose } from "react-icons/io5";
-import { HiOutlineDotsVertical } from "react-icons/hi";
 import ChannelInfo from "./channel-info";
 
 const ChatHeader = () => {
   const { userInfo, selectedChatType, selectedChatData, closeChat } =
     useAppStore();
   return (
-    <div className="flex items-center justify-between h-[10vh] border-b-2 border-zinc-800 px-8">
+    <div className="flex items-center justify-between h-[10vh] border-b-2 border-purple-200 dark:border-zinc-800 px-8">
       <div className="flex w-full items-center justify-between">
         <div className="flex gap-3 items-center justify-center">
           <Avatar className="h-10 w-10 rounded-full overflow-hidden ">
@@ -42,9 +41,11 @@ const ChatHeader = () => {
           </Avatar>
 
           {selectedChatType === "channel" ? (
-            <div>{selectedChatData.name}</div>
+            <div className="text-zinc-900 dark:text-zinc-200">
+              {selectedChatData.name}
+            </div>
           ) : (
-            <div>
+            <div className="text-zinc-900 dark:text-zinc-200">
               {selectedChatData.firstName
                 ? `${selectedChatData.firstName} ${selectedChatData.lastName}`
                 : selectedChatData.email}
