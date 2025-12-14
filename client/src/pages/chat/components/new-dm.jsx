@@ -101,7 +101,7 @@ const NewDM = () => {
                 <PulseLoader color="#7e22ce" />
               </div>
             ) : contacts.length > 0 ? (
-              <ScrollArea className="flex flex-col gap-3">
+              <ScrollArea className="flex flex-1 min-h-0 flex-col gap-3">
                 {contacts.map((contact, i) => (
                   <div
                     key={i}
