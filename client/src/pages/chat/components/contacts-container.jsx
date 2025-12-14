@@ -60,7 +60,9 @@ const ContactsContainer = () => {
   };
 
   const handleChooseChannel = async (channel) => {
-    setSelectedChatMessages([]);
+    if (selectedChatData?._id !== channel._id) {
+      setSelectedChatMessages([]);
+    }
     setSelectedChatType("channel");
     setSelectedChatData(channel);
   };

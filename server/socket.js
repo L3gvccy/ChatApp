@@ -124,6 +124,38 @@ const setupSocket = (server) => {
     });
   };
 
+  const removeChannelMember = async (channelId, memberId) => {
+    const updatedChannel = await Channel.findByIdAndUpdate(
+      channelId,
+      { $pull: { members: memberId } },
+      { new: true }
+    )
+      .populate("owner", "_id firstName lastName email color image")
+      .populate("members", "_id firstName lastName email color image");
+
+    const ownerSocketId = userSocketMap.get(
+      updatedChannel.owner._id.toString()
+    );
+    const memberSocketId = userSocketMap.get(memberId);
+
+    if (memberSocketId) {
+      io.to(memberSocketId).emit("channelDeleted", updatedChannel._id);
+    }
+
+    if (ownerSocketId) {
+      io.to(ownerSocketId).emit("channelUpdated", updatedChannel);
+    }
+
+    updatedChannel.members.forEach((m) => {
+      if (m._id.toString() !== memberId.toString()) {
+        const mSocketId = userSocketMap.get(m._id.toString());
+        if (mSocketId) {
+          io.to(mSocketId).emit("channelUpdated", updatedChannel);
+        }
+      }
+    });
+  };
+
   io.on("connection", (socket) => {
     const userId = socket.handshake.query.userId;
 
@@ -139,6 +171,7 @@ const setupSocket = (server) => {
     socket.on("createChannel", createChannel);
     socket.on("updateChannel", updateChannel);
     socket.on("deleteChannel", deleteChannel);
+    socket.on("removeChannelMember", removeChannelMember);
     socket.on("disconnect", () => disconnect(socket));
   });
 };

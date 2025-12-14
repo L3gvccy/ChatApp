@@ -18,6 +18,7 @@ import React, { use, useEffect, useRef, useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { IoAddOutline, IoPencil, IoPersonAdd, IoTrash } from "react-icons/io5";
 import { IoMdClose, IoMdCheckmark } from "react-icons/io";
+import { BiLogOut } from "react-icons/bi";
 import { toast } from "sonner";
 import { useSocket } from "@/context/SocketContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -27,7 +28,7 @@ import ConfirmAction from "./confirm-action";
 
 const ChannelInfo = (props) => {
   const { isOwner } = props;
-  const { selectedChatData } = useAppStore();
+  const { userInfo, selectedChatData } = useAppStore();
   const socket = useSocket();
   const fileInputRef = useRef();
   const [hovered, setHovered] = useState(false);
@@ -117,6 +118,16 @@ const ChannelInfo = (props) => {
     setConfirmText("Ви впевнені, що хочете видалити цей канал?");
     setConfirmOpen(true);
     setConfirmAction(() => handleChannelDelete);
+  };
+
+  const handleChannelLeaveClick = () => {
+    setConfirmText("Ви впевнені, що хочете покинути цей канал?");
+    setConfirmOpen(true);
+    setConfirmAction(() => handleChannelLeave);
+  };
+
+  const handleChannelLeave = () => {
+    socket.emit("removeChannelMember", selectedChatData._id, userInfo._id);
   };
 
   const handleChannelDelete = async () => {
@@ -293,9 +304,13 @@ const ChannelInfo = (props) => {
               Видалити канал
             </button>
           ) : (
-            <div className="text-center text-red-600">
-              Вихід з каналу наразі недоступний
-            </div>
+            <button
+              className="flex items-center gap-2 w-full text-md rounded-lg p-3 cursor-pointer bg-zinc-700 hover:bg-red-600 active:bg-red-800 transition-all duration-300"
+              onClick={handleChannelLeaveClick}
+            >
+              <BiLogOut className="inline mr-2" />
+              Вийти з каналу
+            </button>
           )}
         </DialogContent>
       </Dialog>
