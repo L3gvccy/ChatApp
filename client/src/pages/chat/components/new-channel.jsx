@@ -85,6 +85,9 @@ const NewChannel = () => {
       color: Math.floor(Math.random() * 5),
     });
     setNewGroupChatModalOpen(false);
+    setSearchContacts("");
+    setSelectedContacts([]);
+    setName("");
   };
 
   return (
@@ -118,55 +121,56 @@ const NewChannel = () => {
               setName(e.target.value);
             }}
           />
-          <ScrollArea className="flex gap-2 h-20">
+          <ScrollArea className="h-20">
             {selectedContacts.length > 0 ? (
-              selectedContacts.map((contact) => (
-                <div
-                  className="inline-block mb-2 me-2 p-2 rounded-md border border-zinc-300"
-                  key={contact._id}
-                >
-                  <div className="flex items-center gap-2">
-                    <Avatar className="h-6 w-6 rounded-full overflow-hidden ">
-                      {contact.image ? (
-                        <AvatarImage
-                          src={contact.image}
-                          alt="Фото профілю"
-                          className="object-cover w-full h-full bg-black"
-                        />
-                      ) : (
-                        <div
-                          className={`uppercase h-6 w-6 text-md rounded-full flex justify-center items-center ${getColor(
-                            contact.color
-                          )}`}
-                        >
-                          {contact.firstName
-                            ? contact.firstName.split("").shift()
-                            : contact.email.split("").shift()}
-                        </div>
-                      )}
-                    </Avatar>
-                    <div className="text-sm">
-                      {contact.firstName
-                        ? `${contact.firstName} ${contact.lastName}`
-                        : contact.email}
-                    </div>
-                    <div
-                      className="text-md text-zinc-300 focus:text-zinc-100 transition-all duration-300 cursor-pointer"
-                      onClick={() => {
-                        handleRemoveContact(contact);
-                      }}
-                    >
-                      <IoClose />
+              <div className="flex flex-wrap gap-2 h-full items-start">
+                {selectedContacts.map((contact) => (
+                  <div
+                    className="inline-block mb-2 me-2 p-2 rounded-md border border-zinc-300"
+                    key={contact._id}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-6 w-6 rounded-full overflow-hidden ">
+                        {contact.image ? (
+                          <AvatarImage
+                            src={contact.image}
+                            alt="Фото профілю"
+                            className="object-cover w-full h-full bg-black"
+                          />
+                        ) : (
+                          <div
+                            className={`uppercase h-6 w-6 text-md rounded-full flex justify-center items-center ${getColor(
+                              contact.color
+                            )}`}
+                          >
+                            {contact.firstName
+                              ? contact.firstName.split("").shift()
+                              : contact.email.split("").shift()}
+                          </div>
+                        )}
+                      </Avatar>
+                      <div className="text-sm">
+                        {contact.firstName
+                          ? `${contact.firstName} ${contact.lastName}`
+                          : contact.email}
+                      </div>
+                      <div
+                        className="text-md text-zinc-300 focus:text-zinc-100 transition-all duration-300 cursor-pointer"
+                        onClick={() => {
+                          handleRemoveContact(contact);
+                        }}
+                      >
+                        <IoClose />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
+                ))}
+              </div>
             ) : (
               <div className="h-20 flex items-center justify-center text-zinc-700 dark:text-zinc-300">
                 Тут будуть відображатись обрані контакти
               </div>
             )}
-            <div className=""></div>
           </ScrollArea>
           <div>
             <Input
