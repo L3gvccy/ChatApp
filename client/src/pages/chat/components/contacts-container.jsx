@@ -11,7 +11,6 @@ import { useSocket } from "@/context/SocketContext";
 import NewChannel from "./new-channel";
 
 const ContactsContainer = () => {
-  const socket = useSocket();
   const {
     selectedChatMessages,
     channelContacts,
@@ -129,42 +128,44 @@ const ContactsContainer = () => {
           <NewChannel />
         </div>
 
-        {channelContacts.map((channel, i) => (
-          <div className="flex w-full px-4 mb-2" key={channel._id}>
-            <div
-              key={i}
-              className={`flex w-full gap-5  rounded-lg cursor-pointer p-3 ${
-                selectedChatData?._id === channel._id
-                  ? "bg-purple-800 hover:bg-purple-700"
-                  : "bg-zinc-900 hover:bg-zinc-800"
-              }`}
-              onClick={() => {
-                handleChooseChannel(channel);
-              }}
-            >
-              <Avatar className="h-12 w-12 rounded-full overflow-hidden ">
-                {channel.image ? (
-                  <AvatarImage
-                    src={channel.image}
-                    alt="Фото профілю"
-                    className="object-cover w-full h-full bg-black"
-                  />
-                ) : (
-                  <div
-                    className={`uppercase h-12 w-12 text-2xl rounded-full flex justify-center items-center ${getColor(
-                      channel.color
-                    )}`}
-                  >
-                    {channel.name.split("").shift()}
-                  </div>
-                )}
-              </Avatar>
-              <div className="flex flex-1 flex-col justify-center text-zinc-300">
-                <p className="text-md">{channel.name}</p>
+        {channelContacts
+          .sort((a, b) => new Date(b.lastActivity) - new Date(a.lastActivity))
+          .map((channel, i) => (
+            <div className="flex w-full px-4 mb-2" key={channel._id}>
+              <div
+                key={i}
+                className={`flex w-full gap-5  rounded-lg cursor-pointer p-3 ${
+                  selectedChatData?._id === channel._id
+                    ? "bg-purple-800 hover:bg-purple-700"
+                    : "bg-zinc-900 hover:bg-zinc-800"
+                }`}
+                onClick={() => {
+                  handleChooseChannel(channel);
+                }}
+              >
+                <Avatar className="h-12 w-12 rounded-full overflow-hidden ">
+                  {channel.image ? (
+                    <AvatarImage
+                      src={channel.image}
+                      alt="Фото профілю"
+                      className="object-cover w-full h-full bg-black"
+                    />
+                  ) : (
+                    <div
+                      className={`uppercase h-12 w-12 text-2xl rounded-full flex justify-center items-center ${getColor(
+                        channel.color
+                      )}`}
+                    >
+                      {channel.name.split("").shift()}
+                    </div>
+                  )}
+                </Avatar>
+                <div className="flex flex-1 flex-col justify-center text-zinc-300">
+                  <p className="text-md">{channel.name}</p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
       <ProfileInfo />
     </div>

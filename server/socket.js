@@ -44,9 +44,13 @@ const setupSocket = (server) => {
   const sendChannelMessage = async (message) => {
     const senderSocketId = userSocketMap.get(message.sender.toString());
 
-    const channel = await Channel.findById(message.channel)
-      .populate("owner", "_id")
-      .populate("members", "_id");
+    const channel = await Channel.findByIdAndUpdate(
+      message.channel,
+      { lastActivity: Date.now() },
+      { new: true }
+    )
+      .populate("owner", "_id firstName lastName email color image")
+      .populate("members", "_id firstName lastName email color image");
 
     const ownerSocketId = userSocketMap.get(channel.owner._id.toString());
 
@@ -59,6 +63,7 @@ const setupSocket = (server) => {
 
     if (senderSocketId) {
       io.to(senderSocketId).emit("recieveMessage", messageData);
+      io.to(senderSocketId).emit("channelUpdated", channel);
     }
 
     if (
@@ -66,6 +71,7 @@ const setupSocket = (server) => {
       channel.owner._id.toString() !== message.sender.toString()
     ) {
       io.to(ownerSocketId).emit("recieveMessage", messageData);
+      io.to(ownerSocketId).emit("channelUpdated", channel);
     }
 
     channel.members.forEach((member) => {
@@ -73,6 +79,7 @@ const setupSocket = (server) => {
         const memberSocketId = userSocketMap.get(member._id.toString());
         if (memberSocketId) {
           io.to(memberSocketId).emit("recieveMessage", messageData);
+          io.to(memberSocketId).emit("channelUpdated", channel);
         }
       }
     });
