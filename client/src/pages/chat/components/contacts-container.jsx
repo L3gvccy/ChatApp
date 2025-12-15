@@ -2,19 +2,21 @@ import React, { useState, useEffect } from "react";
 import ProfileInfo from "./profile-info";
 import NewDM from "./new-dm";
 import { apiClient } from "@/lib/api-client";
-import { GET_CHANNELS_ROUTE, GET_CONTACTS_DM_ROUTE } from "@/utils/constants";
+import {
+  GET_CHANNELS_ROUTE,
+  GET_CONTACTS_DM_ROUTE,
+  MARK_AS_READ_ROUTE,
+} from "@/utils/constants";
 import { getColor } from "@/lib/utils";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { useAppStore } from "@/store";
-import { useSocket } from "@/context/SocketContext";
 import NewChannel from "./new-channel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ThemeButton from "@/components/theme-button";
 
 const ContactsContainer = () => {
   const {
-    selectedChatMessages,
     channelContacts,
     setSelectedChatType,
     setSelectedChatData,
@@ -66,6 +68,29 @@ const ContactsContainer = () => {
     }
     setSelectedChatType("channel");
     setSelectedChatData(channel);
+
+    await apiClient.post(
+      MARK_AS_READ_ROUTE,
+      { channelId: channel._id },
+      { withCredentials: true }
+    );
+  };
+
+  const getUnreadMessagesCount = async () => {
+    await apiClient
+      .post(
+        GET_UNREAD_MESSAGES_COUNT_ROUTE,
+        {
+          contactIds: directMessagesContacts.map((c) => c._id),
+          channelIds: channelContacts.map((c) => c._id),
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          // Handle unread counts here if needed
+        }
+      });
   };
 
   useEffect(() => {
@@ -127,6 +152,11 @@ const ContactsContainer = () => {
                       : `${contact.email}`}
                   </p>
                 </div>
+                {/* <div className="flex items-center justify-center ">
+                  <div className="bg-purple-700 text-zinc-100 text-sm rounded-full w-8 h-8 flex items-center-safe justify-center-safe">
+                    9+
+                  </div>
+                </div> */}
               </div>
             </div>
           ))}

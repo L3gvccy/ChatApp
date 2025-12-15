@@ -3,6 +3,8 @@ import {
   downloadFile,
   getChannelMessages,
   getMessages,
+  getNumberOfUnreadMessages,
+  markMessagesAsRead,
   uploadFile,
 } from "../controllers/MessagesController.js";
 import { verifyToken } from "../middlewares/AuthMiddleware.js";
@@ -21,5 +23,6 @@ messagesRoutes.post(
   uploadFile
 );
 messagesRoutes.get("/download-file", verifyToken, downloadFile);
+messagesRoutes.post("/mark-as-read", verifyToken, markMessagesAsRead);
 
 export default messagesRoutes;

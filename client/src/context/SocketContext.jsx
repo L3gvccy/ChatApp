@@ -31,8 +31,18 @@ export const SocketProvider = ({ children }) => {
           selectedChatType,
           selectedChatData,
           addMessage,
+          directMessagesContacts,
           setDirectMessagesContacts,
         } = useAppStore.getState();
+
+        if (message.reciever) {
+          const res = await apiClient.get(GET_CONTACTS_DM_ROUTE, {
+            withCredentials: true,
+          });
+
+          res.data.contacts.length > 0 &&
+            setDirectMessagesContacts(res.data.contacts);
+        }
 
         if (
           selectedChatType == "contact" &&
@@ -40,13 +50,6 @@ export const SocketProvider = ({ children }) => {
             selectedChatData._id === message.reciever._id)
         ) {
           addMessage(message);
-
-          const res = await apiClient.get(GET_CONTACTS_DM_ROUTE, {
-            withCredentials: true,
-          });
-
-          res.data.contacts.length > 0 &&
-            setDirectMessagesContacts(res.data.contacts);
         } else if (
           selectedChatType == "channel" &&
           selectedChatData._id === message.channel

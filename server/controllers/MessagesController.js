@@ -1,4 +1,5 @@
 import cloudinary from "../config/cloudinaryConfig.js";
+import LastRead from "../models/LastReadModel.js";
 import Message from "../models/MessageModel.js";
 import axios from "axios";
 
@@ -90,5 +91,56 @@ export const downloadFile = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(400).send("Не вдалося отримати файл");
+  }
+};
+
+export const markMessagesAsRead = async (req, res) => {
+  try {
+    const { userId } = req;
+    const { channelId, contactId } = req.body;
+
+    if (channelId && !contactId) {
+      const lastMessage = await Message.findOne({ channel: channelId })
+        .sort({ timestamp: -1 })
+        .limit(1);
+
+      if (lastMessage) {
+        await LastRead.findOneAndUpdate(
+          { user: userId, channelId: channelId },
+          {
+            user: userId,
+            channelId: channelId,
+            messageId: lastMessage._id,
+          },
+          { upsert: true, new: true }
+        );
+      }
+    } else if (contactId && !channelId) {
+      const lastMessage = await Message.findOne({
+        $or: [
+          { sender: userId, reciever: contactId },
+          { sender: contactId, reciever: userId },
+        ],
+      })
+        .sort({ timestamp: -1 })
+        .limit(1);
+
+      if (lastMessage) {
+        await LastRead.findOneAndUpdate(
+          { user: userId, contactId: contactId },
+          {
+            user: userId,
+            contactId: contactId,
+            messageId: lastMessage._id,
+          },
+          { upsert: true, new: true }
+        );
+      }
+    }
+
+    res.status(200).send("Повідомлення позначено як прочитані");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Помилка сервара");
   }
 };
