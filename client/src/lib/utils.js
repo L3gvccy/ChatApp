@@ -39,7 +39,6 @@ export const AddUnreadCount = (id) => {
   const { unreadCounts, setUnreadCounts } = useAppStore.getState();
 
   const currentVal = unreadCounts[id] || 0;
-  console.log(id, currentVal);
 
   setUnreadCounts({
     ...unreadCounts,

@@ -51,7 +51,7 @@ export const SocketProvider = ({ children }) => {
         } else if (message?.reciever?._id === userInfo._id || message.channel) {
           message.reciever
             ? AddUnreadCount(message.sender._id)
-            : AddUnreadCount(message.channel._id);
+            : AddUnreadCount(message.channel);
         }
       };
 
