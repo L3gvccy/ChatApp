@@ -20,8 +20,9 @@ import { useAppStore } from "@/store";
 import NewChannel from "./new-channel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ThemeButton from "@/components/theme-button";
+import UnreadCount from "./unread-count";
 
-const ContactsContainer = ({ setLoading }) => {
+const ContactsContainer = () => {
   const {
     channelContacts,
     setSelectedChatType,
@@ -123,15 +124,7 @@ const ContactsContainer = ({ setLoading }) => {
                         </p>
                       </div>
 
-                      {getUnreadCount(contact._id) > 0 && (
-                        <div className="shrink-0">
-                          <div className="bg-purple-700 text-zinc-100 text-sm rounded-full w-8 h-8 flex items-center justify-center">
-                            {getUnreadCount(contact._id) > 9
-                              ? "9+"
-                              : getUnreadCount(contact._id)}
-                          </div>
-                        </div>
-                      )}
+                      <UnreadCount id={contact._id} />
                     </div>
                   </div>
                 </div>
@@ -191,15 +184,7 @@ const ContactsContainer = ({ setLoading }) => {
                         </p>
                       </div>
 
-                      {getUnreadCount(channel._id) > 0 && (
-                        <div className="shrink-0">
-                          <div className="bg-purple-700 text-zinc-100 text-sm rounded-full w-8 h-8 flex items-center justify-center">
-                            {getUnreadCount(channel._id) > 9
-                              ? "9+"
-                              : getUnreadCount(channel._id)}
-                          </div>
-                        </div>
-                      )}
+                      <UnreadCount id={channel._id} />
                     </div>
                   </div>
                 </div>

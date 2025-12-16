@@ -39,8 +39,9 @@ export const SocketProvider = ({ children }) => {
 
         if (
           selectedChatType == "contact" &&
-          (selectedChatData._id === message.sender._id ||
-            selectedChatData._id === message.reciever._id)
+          !message.channel &&
+          (selectedChatData._id === message.sender?._id ||
+            selectedChatData._id === message.reciever?._id)
         ) {
           addMessage(message);
         } else if (
