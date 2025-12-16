@@ -35,15 +35,6 @@ export const SocketProvider = ({ children }) => {
           setDirectMessagesContacts,
         } = useAppStore.getState();
 
-        if (message.reciever) {
-          const res = await apiClient.get(GET_CONTACTS_DM_ROUTE, {
-            withCredentials: true,
-          });
-
-          res.data.contacts.length > 0 &&
-            setDirectMessagesContacts(res.data.contacts);
-        }
-
         if (
           selectedChatType == "contact" &&
           (selectedChatData._id === message.sender._id ||
@@ -56,6 +47,16 @@ export const SocketProvider = ({ children }) => {
         ) {
           addMessage(message);
         }
+      };
+
+      const updateContacts = (contacts) => {
+        const { setDirectMessagesContacts } = useAppStore.getState();
+
+        const sortedContacts = [...contacts].sort((a, b) => {
+          return new Date(b.lastMessageTime) - new Date(a.lastMessageTime);
+        });
+
+        sortedContacts.length > 0 && setDirectMessagesContacts(sortedContacts);
       };
 
       const handleAddChannel = (channel) => {
@@ -108,6 +109,7 @@ export const SocketProvider = ({ children }) => {
       };
 
       socket.current.on("recieveMessage", handleRecieveMessage);
+      socket.current.on("updateContacts", updateContacts);
       socket.current.on("channelCreated", handleAddChannel);
       socket.current.on("channelUpdated", handleChannelUpdated);
       socket.current.on("channelDeleted", handleChannelDeleted);

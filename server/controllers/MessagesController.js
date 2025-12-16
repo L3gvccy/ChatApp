@@ -144,3 +144,5 @@ export const markMessagesAsRead = async (req, res) => {
     return res.status(500).send("Помилка сервара");
   }
 };
+
+export const getNumberOfUnreadMessages = async (req, res) => {};

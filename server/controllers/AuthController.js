@@ -1,6 +1,7 @@
 import { compare } from "bcrypt";
 import User from "../models/UserModel.js";
 import jwt from "jsonwebtoken";
+import ContactsDM from "../models/ContactsDMModel.js";
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
@@ -24,6 +25,8 @@ export const register = async (req, res, next) => {
     }
 
     const user = await User.create({ email, password });
+    await ContactsDM.create({ user: user._id });
+
     res.cookie("jwt", createToken(email, user.id), {
       maxAge,
       secure: true,

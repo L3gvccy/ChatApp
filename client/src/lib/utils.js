@@ -1,6 +1,7 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import animationData from "@/assets/chatLottie.json";
+import { useAppStore } from "@/store";
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
@@ -27,4 +28,9 @@ export const animationDefaultOptions = {
 
 export const getFileName = (fileUrl) => {
   return fileUrl.split("/").pop().split("?")[0];
+};
+
+export const initUreadCounts = (res) => {
+  const { setUnreadCounts } = useAppStore.getState();
+  console.log(res);
 };

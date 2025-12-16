@@ -1,6 +1,7 @@
 import { Server as SocketIoServer } from "socket.io";
 import Message from "./models/MessageModel.js";
 import Channel from "./models/ChannelModel.js";
+import ContactsDM from "./models/ContactsDMModel.js";
 
 const setupSocket = (server) => {
   const io = new SocketIoServer(server, {
@@ -33,11 +34,72 @@ const setupSocket = (server) => {
       .populate("sender", "id email firstName lastName image color")
       .populate("reciever", "id email firstName lastName image color");
 
+    let updatedSender = await ContactsDM.findOneAndUpdate(
+      {
+        user: message.sender,
+        "contacts.contact": message.reciever,
+      },
+      {
+        $set: { "contacts.$.lastMessageTime": new Date() },
+      },
+      { new: true }
+    );
+
+    if (!updatedSender) {
+      await ContactsDM.findOneAndUpdate(
+        { user: message.sender },
+        {
+          $push: {
+            contacts: {
+              contact: message.reciever,
+              lastMessageTime: new Date(),
+            },
+          },
+        },
+        { upsert: true }
+      );
+    }
+    updatedSender = await ContactsDM.findOne({ user: message.sender }).populate(
+      "contacts.contact",
+      "_id firstName lastName email color image"
+    );
+
+    let updatedReciever = await ContactsDM.findOneAndUpdate(
+      {
+        user: message.reciever,
+        "contacts.contact": message.sender,
+      },
+      {
+        $set: { "contacts.$.lastMessageTime": new Date() },
+      },
+      { new: true }
+    );
+
+    if (!updatedReciever) {
+      await ContactsDM.findOneAndUpdate(
+        { user: message.reciever },
+        {
+          $push: {
+            contacts: {
+              contact: message.sender,
+              lastMessageTime: new Date(),
+            },
+          },
+        },
+        { upsert: true }
+      );
+    }
+    updatedReciever = await ContactsDM.findOne({
+      user: message.reciever,
+    }).populate("contacts.contact", "_id firstName lastName email color image");
+
     if (recieverSocketId) {
       io.to(recieverSocketId).emit("recieveMessage", messageData);
+      io.to(recieverSocketId).emit("updateContacts", updatedReciever.contacts);
     }
     if (senderSocketId) {
       io.to(senderSocketId).emit("recieveMessage", messageData);
+      io.to(senderSocketId).emit("updateContacts", updatedSender.contacts);
     }
   };
 

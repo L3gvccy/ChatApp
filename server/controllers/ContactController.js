@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import User from "../models/UserModel.js";
 import Message from "../models/MessageModel.js";
+import ContactsDM from "../models/ContactsDMModel.js";
 
 export const searchContacts = async (req, res, next) => {
   try {
@@ -31,55 +32,17 @@ export const searchContacts = async (req, res, next) => {
 export const getContactsDM = async (req, res, next) => {
   try {
     let { userId } = req;
-    userId = new mongoose.Types.ObjectId(userId);
+    const id = new mongoose.Types.ObjectId(userId);
 
-    const contacts = await Message.aggregate([
-      {
-        $match: {
-          $or: [{ sender: userId }, { reciever: userId }],
-        },
-      },
-      {
-        $sort: {
-          timestamp: -1,
-        },
-      },
-      {
-        $group: {
-          _id: {
-            $cond: {
-              if: { $eq: ["$sender", userId] },
-              then: "$reciever",
-              else: "$sender",
-            },
-          },
-          lastMessageTime: { $first: "$timestamp" },
-        },
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "_id",
-          foreignField: "_id",
-          as: "contactInfo",
-        },
-      },
-      {
-        $unwind: "$contactInfo",
-      },
-      {
-        $project: {
-          _id: 1,
-          lastMessageTime: 1,
-          email: "$contactInfo.email",
-          firstName: "$contactInfo.firstName",
-          lastName: "$contactInfo.lastName",
-          image: "$contactInfo.image",
-          color: "$contactInfo.color",
-        },
-      },
-      { $sort: { lastMessageTime: -1 } },
-    ]);
+    const result = await ContactsDM.findOne({ user: id }).populate(
+      "contacts.contact",
+      "_id firstName lastName email color image"
+    );
+
+    const contacts =
+      [...result?.contacts].sort((a, b) => {
+        return new Date(b.lastMessageTime) - new Date(a.lastMessageTime);
+      }) || [];
 
     return res.status(200).json({ contacts });
   } catch (error) {
