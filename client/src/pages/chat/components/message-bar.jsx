@@ -68,7 +68,6 @@ const MessageBar = () => {
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    console.log(file);
 
     if (file) {
       let formData = new FormData();

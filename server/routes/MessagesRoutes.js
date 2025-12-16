@@ -24,5 +24,10 @@ messagesRoutes.post(
 );
 messagesRoutes.get("/download-file", verifyToken, downloadFile);
 messagesRoutes.post("/mark-as-read", verifyToken, markMessagesAsRead);
+messagesRoutes.post(
+  "/get-unread-messages-count",
+  verifyToken,
+  getNumberOfUnreadMessages
+);
 
 export default messagesRoutes;

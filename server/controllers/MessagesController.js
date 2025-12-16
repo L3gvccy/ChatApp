@@ -145,4 +145,55 @@ export const markMessagesAsRead = async (req, res) => {
   }
 };
 
-export const getNumberOfUnreadMessages = async (req, res) => {};
+export const getNumberOfUnreadMessages = async (req, res) => {
+  try {
+    const { userId } = req;
+    const { contactIds = [], channelIds = [] } = req.body;
+
+    let result = {};
+
+    for (const contactId of contactIds) {
+      const lastRead = await LastRead.findOne({
+        user: userId,
+        contactId,
+      });
+
+      const query = {
+        sender: contactId,
+        reciever: userId,
+      };
+
+      if (lastRead) {
+        query._id = { $gt: lastRead.messageId };
+      }
+
+      const count = await Message.countDocuments(query);
+      result[contactId] = count;
+    }
+
+    /* ========== CHANNELS ========== */
+    for (const channelId of channelIds) {
+      const lastRead = await LastRead.findOne({
+        user: userId,
+        channelId,
+      });
+
+      const query = {
+        channel: channelId,
+        sender: { $ne: userId },
+      };
+
+      if (lastRead) {
+        query._id = { $gt: lastRead.messageId };
+      }
+
+      const count = await Message.countDocuments(query);
+      result[channelId] = count;
+    }
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Помилка сервара");
+  }
+};

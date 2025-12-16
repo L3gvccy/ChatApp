@@ -156,10 +156,6 @@ const ChannelInfo = (props) => {
   };
 
   useEffect(() => {
-    console.log(selectedChatData);
-  }, []);
-
-  useEffect(() => {
     setEditingName(false);
     setNewChannelName(selectedChatData.name);
   }, [modalOpen]);

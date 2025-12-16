@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import { AddUnreadCount } from "@/lib/utils";
 import { useAppStore } from "@/store";
 import { GET_CONTACTS_DM_ROUTE, HOST } from "@/utils/constants";
 import { createContext, useState, useEffect, useRef, useContext } from "react";
@@ -28,6 +29,7 @@ export const SocketProvider = ({ children }) => {
 
       const handleRecieveMessage = async (message) => {
         const {
+          userInfo,
           selectedChatType,
           selectedChatData,
           addMessage,
@@ -46,6 +48,10 @@ export const SocketProvider = ({ children }) => {
           selectedChatData._id === message.channel
         ) {
           addMessage(message);
+        } else if (message?.reciever?._id === userInfo._id || message.channel) {
+          message.reciever
+            ? AddUnreadCount(message.sender._id)
+            : AddUnreadCount(message.channel._id);
         }
       };
 
@@ -85,7 +91,7 @@ export const SocketProvider = ({ children }) => {
           return c;
         });
         setChannelContacts(updatedChannels);
-        if (selectedChatData._id === channel._id) {
+        if (selectedChatData?._id === channel?._id) {
           setSelectedChatData(channel);
         }
       };

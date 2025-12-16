@@ -5,9 +5,15 @@ import { apiClient } from "@/lib/api-client";
 import {
   GET_CHANNELS_ROUTE,
   GET_CONTACTS_DM_ROUTE,
+  GET_UNREAD_MESSAGES_COUNT_ROUTE,
   MARK_AS_READ_ROUTE,
 } from "@/utils/constants";
-import { getColor } from "@/lib/utils";
+import {
+  getColor,
+  getUnreadCount,
+  initUreadCounts,
+  ResetUnreadCount,
+} from "@/lib/utils";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { useAppStore } from "@/store";
@@ -15,7 +21,7 @@ import NewChannel from "./new-channel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ThemeButton from "@/components/theme-button";
 
-const ContactsContainer = () => {
+const ContactsContainer = ({ setLoading }) => {
   const {
     channelContacts,
     setSelectedChatType,
@@ -29,38 +35,16 @@ const ContactsContainer = () => {
   );
   const selectedChatData = useAppStore((state) => state.selectedChatData);
 
-  const getContactsDM = async () => {
-    apiClient
-      .get(GET_CONTACTS_DM_ROUTE, { withCredentials: true })
-      .then((res) => {
-        if (res.status === 200) {
-          console.log(res.data);
-          setDirectMessagesContacts(res.data.contacts);
-        }
-      })
-      .catch((err) => {
-        const msg = err.response?.data;
-        toast.error(msg);
-      });
-  };
-
-  const getContactsChannel = async () => {
-    apiClient
-      .get(GET_CHANNELS_ROUTE, { withCredentials: true })
-      .then((res) => {
-        if (res.status === 200) {
-          setChannelContacts(res.data.channels);
-        }
-      })
-      .catch((err) => {
-        const msg = err.response?.data;
-        toast.error(msg);
-      });
-  };
-
   const handleChooseContact = async (contact) => {
     setSelectedChatType("contact");
     setSelectedChatData(contact);
+    ResetUnreadCount(contact._id);
+
+    await apiClient.post(
+      MARK_AS_READ_ROUTE,
+      { contactId: contact._id },
+      { withCredentials: true }
+    );
   };
 
   const handleChooseChannel = async (channel) => {
@@ -69,6 +53,7 @@ const ContactsContainer = () => {
     }
     setSelectedChatType("channel");
     setSelectedChatData(channel);
+    ResetUnreadCount(channel._id);
 
     await apiClient.post(
       MARK_AS_READ_ROUTE,
@@ -76,28 +61,6 @@ const ContactsContainer = () => {
       { withCredentials: true }
     );
   };
-
-  const getUnreadMessagesCount = async () => {
-    await apiClient
-      .post(
-        GET_UNREAD_MESSAGES_COUNT_ROUTE,
-        {
-          contactIds: directMessagesContacts.map((c) => c._id),
-          channelIds: channelContacts.map((c) => c._id),
-        },
-        { withCredentials: true }
-      )
-      .then((res) => {
-        if (res.status === 200) {
-          // Handle unread counts here if needed
-        }
-      });
-  };
-
-  useEffect(() => {
-    getContactsDM();
-    getContactsChannel();
-  }, []);
 
   return (
     <div className="relative md:w-[35vw] lg:w-[30vw] xl:w-[20vw] w-full border-purple-200 dark:bg-zinc-900 border-r-2 dark:border-zinc-800">
@@ -115,7 +78,7 @@ const ContactsContainer = () => {
               <div className="flex w-full px-4 mb-2" key={contact._id}>
                 <div
                   key={i}
-                  className={`flex w-full gap-5  rounded-lg cursor-pointer p-3 ${
+                  className={`flex w-full gap-2 rounded-lg cursor-pointer p-3 ${
                     selectedChatData?._id === contact._id
                       ? "bg-purple-800 hover:bg-purple-700"
                       : "hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800"
@@ -144,23 +107,32 @@ const ContactsContainer = () => {
                     )}
                   </Avatar>
                   <div
-                    className={`flex flex-1 flex-col justify-center dark:text-zinc-300 ${
+                    className={`flex-1 min-w-0 flex justify-between items-center dark:text-zinc-300 ${
                       selectedChatData?._id === contact._id
                         ? "text-zinc-100"
                         : "text-zinc-900"
                     }`}
                   >
-                    <p className="text-md">
-                      {contact?.firstName
-                        ? `${contact.firstName} ${contact.lastName}`
-                        : `${contact.email}`}
-                    </p>
+                    <div className="w-full grid grid-cols-[1fr_auto] items-center gap-2">
+                      <div className="min-w-0 overflow-hidden">
+                        <p className="text-md truncate whitespace-nowrap">
+                          {contact?.firstName
+                            ? `${contact.firstName} ${contact.lastName}`
+                            : contact.email}
+                        </p>
+                      </div>
+
+                      {getUnreadCount(contact._id) > 0 && (
+                        <div className="shrink-0">
+                          <div className="bg-purple-700 text-zinc-100 text-sm rounded-full w-8 h-8 flex items-center justify-center">
+                            {getUnreadCount(contact._id) > 9
+                              ? "9+"
+                              : getUnreadCount(contact._id)}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  {/* <div className="flex items-center justify-center ">
-                  <div className="bg-purple-700 text-zinc-100 text-sm rounded-full w-8 h-8 flex items-center-safe justify-center-safe">
-                    9+
-                  </div>
-                </div> */}
                 </div>
               </div>
             );
@@ -211,7 +183,23 @@ const ContactsContainer = () => {
                         : "text-zinc-900"
                     }`}
                   >
-                    <p className="text-md">{channel.name}</p>
+                    <div className="w-full grid grid-cols-[1fr_auto] items-center gap-2">
+                      <div className="min-w-0 overflow-hidden">
+                        <p className="text-md truncate whitespace-nowrap">
+                          {channel.name}
+                        </p>
+                      </div>
+
+                      {getUnreadCount(channel._id) > 0 && (
+                        <div className="shrink-0">
+                          <div className="bg-purple-700 text-zinc-100 text-sm rounded-full w-8 h-8 flex items-center justify-center">
+                            {getUnreadCount(channel._id) > 9
+                              ? "9+"
+                              : getUnreadCount(channel._id)}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

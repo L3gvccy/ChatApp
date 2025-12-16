@@ -32,5 +32,32 @@ export const getFileName = (fileUrl) => {
 
 export const initUreadCounts = (res) => {
   const { setUnreadCounts } = useAppStore.getState();
-  console.log(res);
+  setUnreadCounts(res);
+};
+
+export const AddUnreadCount = (id) => {
+  const { unreadCounts, setUnreadCounts } = useAppStore.getState();
+
+  const currentVal = unreadCounts[id] || 0;
+  console.log(id, currentVal);
+
+  setUnreadCounts({
+    ...unreadCounts,
+    [id]: currentVal + 1,
+  });
+};
+
+export const ResetUnreadCount = (id) => {
+  const { unreadCounts, setUnreadCounts } = useAppStore.getState();
+
+  setUnreadCounts({
+    ...unreadCounts,
+    [id]: 0,
+  });
+};
+
+export const getUnreadCount = (id) => {
+  const { unreadCounts } = useAppStore.getState();
+
+  return unreadCounts[id] || 0;
 };

@@ -52,7 +52,7 @@ function App() {
 
   if (loading) {
     return (
-      <div className="flex h-screen w-screen justify-center items-center">
+      <div className="flex h-screen w-screen justify-center items-center dark:bg-zinc-900">
         <PropagateLoader color="#7e22ce" />
       </div>
     );

@@ -21,6 +21,7 @@ export const GET_CHANNEL_MESSAGES_ROUTE = `${MESSAGES_ROUTES}/get-channel-messag
 export const UPLOAD_FILE_ROUTE = `${MESSAGES_ROUTES}/upload-file`;
 export const DOWNLOAD_FILE_ROUTE = `${MESSAGES_ROUTES}/download-file`;
 export const MARK_AS_READ_ROUTE = `${MESSAGES_ROUTES}/mark-as-read`;
+export const GET_UNREAD_MESSAGES_COUNT_ROUTE = `${MESSAGES_ROUTES}/get-unread-messages-count`;
 
 export const CHANNEL_ROUTES = "/api/channels";
 export const GET_CHANNELS_ROUTE = `${CHANNEL_ROUTES}/get-channels`;
