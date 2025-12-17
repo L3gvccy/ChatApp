@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -21,6 +21,7 @@ import { SEARCH_CONTACTS_ROUTE } from "@/utils/constants";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useAppStore } from "@/store";
+import useDebounce from "@/hooks/useDebounce";
 
 const NewDM = () => {
   const { setSelectedChatType, setSelectedChatData } = useAppStore();
@@ -29,15 +30,20 @@ const NewDM = () => {
   const [loading, setLoading] = useState(false);
   const [contacts, setContacts] = useState([]);
 
-  const handleSearchContacts = async (e) => {
-    const str = e.target.value;
-    setSearchContacts(str);
-    if (str.length > 0) {
+  const debouncedSearch = useDebounce(searchContacts, 300);
+
+  useEffect(() => {
+    if (!debouncedSearch.trim()) {
+      setContacts([]);
+      return;
+    }
+
+    const handleSearchContacts = async (e) => {
       setLoading(true);
       await apiClient
         .post(
           SEARCH_CONTACTS_ROUTE,
-          { searchTerm: str },
+          { searchTerm: debouncedSearch },
           { withCredentials: true }
         )
         .then((res) => {
@@ -54,8 +60,10 @@ const NewDM = () => {
             setLoading(false);
           }, 300);
         });
-    }
-  };
+    };
+
+    handleSearchContacts();
+  }, [debouncedSearch]);
 
   const handleChooseContact = (contact) => {
     setNewDMModalOpen(false);
@@ -90,12 +98,12 @@ const NewDM = () => {
               className="border-none outline-none dark:bg-zinc-800 dark:text-zinc-300 dark:placeholder:text-zinc-400 p-4 my-2 focus-visible:ring-0"
               value={searchContacts}
               onChange={(e) => {
-                handleSearchContacts(e);
+                setSearchContacts(e.target.value);
               }}
             />
           </div>
 
-          {searchContacts.length > 0 ? (
+          {debouncedSearch.length > 0 ? (
             loading ? (
               <div className="flex-1 flex justify-center items-center">
                 <PulseLoader color="#7e22ce" />

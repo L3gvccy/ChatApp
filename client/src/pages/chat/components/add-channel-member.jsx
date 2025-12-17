@@ -8,6 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSocket } from "@/context/SocketContext";
+import useDebounce from "@/hooks/useDebounce";
 import { apiClient } from "@/lib/api-client";
 import { getColor } from "@/lib/utils";
 import { useAppStore } from "@/store";
@@ -27,15 +28,20 @@ const AddChannelMember = (props) => {
   const [loading, setLoading] = useState(false);
   const [contacts, setContacts] = useState([]);
 
-  const handleSearchContacts = async (e) => {
-    const str = e.target.value;
-    setSearchContacts(str);
-    if (str.length > 0) {
+  const debouncedSearch = useDebounce(searchContacts, 300);
+
+  useEffect(() => {
+    if (!debouncedSearch.trim()) {
+      setContacts([]);
+      return;
+    }
+
+    const handleSearchContacts = async (e) => {
       setLoading(true);
       await apiClient
         .post(
           SEARCH_CONTACTS_ROUTE,
-          { searchTerm: str },
+          { searchTerm: debouncedSearch },
           { withCredentials: true }
         )
         .then((res) => {
@@ -57,8 +63,10 @@ const AddChannelMember = (props) => {
             setLoading(false);
           }, 300);
         });
-    }
-  };
+    };
+
+    handleSearchContacts();
+  }, [debouncedSearch]);
 
   const handleAddMember = async (contact) => {
     const memberId = contact._id;
@@ -109,12 +117,12 @@ const AddChannelMember = (props) => {
               className="border-none outline-none dark:bg-zinc-800 dark:text-zinc-300 dark:placeholder:text-zinc-400 p-4 my-2 focus-visible:ring-0"
               value={searchContacts}
               onChange={(e) => {
-                handleSearchContacts(e);
+                setSearchContacts(e.target.value);
               }}
             />
           </div>
 
-          {searchContacts.length > 0 ? (
+          {debouncedSearch.length > 0 ? (
             loading ? (
               <div className="flex-1 flex justify-center items-center">
                 <PulseLoader color="#7e22ce" />

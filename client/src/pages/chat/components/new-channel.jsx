@@ -13,11 +13,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useSocket } from "@/context/SocketContext";
+import useDebounce from "@/hooks/useDebounce";
 import { apiClient } from "@/lib/api-client";
 import { animationDefaultOptions, getColor } from "@/lib/utils";
 import { useAppStore } from "@/store";
 import { SEARCH_CONTACTS_ROUTE } from "@/utils/constants";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaFaceSadTear } from "react-icons/fa6";
 import { IoAddOutline, IoClose } from "react-icons/io5";
 import Lottie from "react-lottie";
@@ -33,15 +34,20 @@ const NewChannel = () => {
   const [contacts, setContacts] = useState([]);
   const [selectedContacts, setSelectedContacts] = useState([]);
 
-  const handleSearchContacts = async (e) => {
-    const str = e.target.value;
-    setSearchContacts(str);
-    if (str.length > 0) {
+  const debouncedSearch = useDebounce(searchContacts, 300);
+
+  useEffect(() => {
+    if (!debouncedSearch.trim()) {
+      setContacts([]);
+      return;
+    }
+
+    const handleSearchContacts = async (e) => {
       setLoading(true);
       await apiClient
         .post(
           SEARCH_CONTACTS_ROUTE,
-          { searchTerm: str },
+          { searchTerm: debouncedSearch },
           { withCredentials: true }
         )
         .then((res) => {
@@ -62,12 +68,20 @@ const NewChannel = () => {
             setLoading(false);
           }, 300);
         });
-    }
-  };
+    };
+
+    handleSearchContacts();
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    setName("");
+    setSelectedContacts([]);
+  }, [newGroupChatModalOpen]);
 
   const handleChooseContact = (contact) => {
     setSelectedContacts((prev) => [...prev, contact]);
     setSearchContacts("");
+    setContacts([]);
   };
 
   const handleRemoveContact = (contact) => {
@@ -178,12 +192,12 @@ const NewChannel = () => {
               className="border-none outline-none dark:bg-zinc-800 dark:text-zinc-300 dark:placeholder:text-zinc-400 p-4 my-2 focus-visible:ring-0"
               value={searchContacts}
               onChange={(e) => {
-                handleSearchContacts(e);
+                setSearchContacts(e.target.value);
               }}
             />
           </div>
 
-          {searchContacts.length > 0 ? (
+          {debouncedSearch.length > 0 ? (
             loading ? (
               <div className="flex-1 flex justify-center items-center">
                 <PulseLoader color="#7e22ce" />
