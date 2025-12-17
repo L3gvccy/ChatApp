@@ -35,6 +35,14 @@ const userSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isOnline: {
+    type: Boolean,
+    default: false,
+  },
+  lastOnline: {
+    type: Date,
+    default: new Date(),
+  },
 });
 
 userSchema.pre("save", async function () {

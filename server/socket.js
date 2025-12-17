@@ -2,6 +2,8 @@ import { Server as SocketIoServer } from "socket.io";
 import Message from "./models/MessageModel.js";
 import Channel from "./models/ChannelModel.js";
 import ContactsDM from "./models/ContactsDMModel.js";
+import User from "./models/UserModel.js";
+import mongoose from "mongoose";
 
 const setupSocket = (server) => {
   const io = new SocketIoServer(server, {
@@ -19,8 +21,31 @@ const setupSocket = (server) => {
     for (const [userId, socketId] of userSocketMap.entries()) {
       if (socketId === socket.id) {
         userSocketMap.delete(userId);
+        updateUserStatus(userId, false);
         break;
       }
+    }
+  };
+
+  const updateUserInfo = (user) => {};
+
+  const updateUserStatus = async (userId, isOnline) => {
+    try {
+      const userSocketId = userSocketMap.get(userId);
+      const id = new mongoose.Types.ObjectId(userId);
+
+      const userContacts = await ContactsDM.findOne({ _id: userId }).populate(
+        "contacts.contact",
+        "_id firstName lastName email color image"
+      );
+
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: userId },
+        { isOnline: isOnline, lastOnline: new Date() },
+        { new: true }
+      );
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -225,12 +250,13 @@ const setupSocket = (server) => {
     });
   };
 
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
     const userId = socket.handshake.query.userId;
 
     if (userId) {
       userSocketMap.set(userId, socket.id);
       console.log(`User connected: ${userId} with socket Id ${socket.id}`);
+      updateUserStatus(userId, true);
     } else {
       console.log("User ID not provided");
     }

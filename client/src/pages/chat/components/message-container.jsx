@@ -8,6 +8,7 @@ import {
   GET_MESSAGES_ROUTE,
 } from "@/utils/constants";
 import moment from "moment";
+import dayjs from "dayjs";
 import React, { useRef, useEffect } from "react";
 import { FaFile, FaDownload } from "react-icons/fa6";
 
@@ -65,14 +66,14 @@ const MessageContainer = () => {
   const renderMessages = () => {
     let lastDate = null;
     return selectedChatMessages.map((message) => {
-      const messageDate = moment(message.timestamp).format("YYYY-MM-DD");
+      const messageDate = dayjs(message.timestamp).format("YYYY-MM-DD");
       const showDate = messageDate != lastDate;
       lastDate = messageDate;
       return (
         <div key={message._id}>
           {showDate && (
             <div className="text-center text-gray-500 my-2">
-              {moment(message.timestamp).format("LL")}
+              {dayjs(message.timestamp).format("LL")}
             </div>
           )}
           {selectedChatType === "contact" && renderDMMessages(message)}
@@ -142,7 +143,7 @@ const MessageContainer = () => {
         </div>
       )}
       <div className="text-xs text-zinc-500">
-        {moment(message.timestamp).format("LT")}
+        {dayjs(message.timestamp).format("LT")}
       </div>
     </div>
   );
@@ -234,7 +235,7 @@ const MessageContainer = () => {
         </div>
       )}
       <div className="text-xs text-zinc-500">
-        {moment(message.timestamp).format("LT")}
+        {dayjs(message.timestamp).format("LT")}
       </div>
     </div>
   );
