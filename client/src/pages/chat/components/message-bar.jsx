@@ -105,20 +105,6 @@ const MessageBar = () => {
     }
   };
 
-  const handleEnterPress = (event) => {
-    if (event.key === "Enter") {
-      sendBtnRef.current.click();
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("keydown", handleEnterPress);
-
-    return () => {
-      document.removeEventListener("keydown", handleEnterPress);
-    };
-  }, []);
-
   return (
     <div className="h-[10vh] dark:bg-zinc-900 flex justify-center items-center px-8 mb-3 gap-2 md:gap-5">
       <div className="flex-1 flex bg-zinc-200 dark:bg-zinc-800 rounded-full items-center gap-1 md:gap-5 pr-5">
@@ -141,6 +127,11 @@ const MessageBar = () => {
           ref={fileInputRef}
           type="file"
           className="hidden"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              sendBtnRef.current?.click();
+            }
+          }}
           onChange={(e) => {
             handleFileChange(e);
           }}
