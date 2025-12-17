@@ -38,6 +38,10 @@ const MessageBar = () => {
     };
   }, [emojiRef]);
 
+  useEffect(() => {
+    setMessage("");
+  }, [selectedChatData]);
+
   const handleSendMessage = async () => {
     if (message.length > 0) {
       if (selectedChatType === "contact") {
@@ -113,6 +117,11 @@ const MessageBar = () => {
           placeholder="Введіть повідомлення"
           className="flex-1 px-5 py-3 pr-0 bg-transparent rounded-full focus:border-none focus:outline-none text-zinc-700 placeholder:text-zinc-500 dark:text-zinc-200 dark:placeholder:text-zinc-400"
           value={message}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              sendBtnRef.current?.click();
+            }
+          }}
           onChange={(e) => {
             setMessage(e.target.value);
           }}
@@ -127,11 +136,6 @@ const MessageBar = () => {
           ref={fileInputRef}
           type="file"
           className="hidden"
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              sendBtnRef.current?.click();
-            }
-          }}
           onChange={(e) => {
             handleFileChange(e);
           }}

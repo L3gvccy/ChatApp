@@ -4,6 +4,7 @@ import { useAppStore } from "@/store";
 import React from "react";
 import { IoClose } from "react-icons/io5";
 import ChannelInfo from "./channel-info";
+import dayjs from "dayjs";
 
 const ChatHeader = () => {
   const { userInfo, selectedChatType, selectedChatData, closeChat } =
@@ -45,10 +46,22 @@ const ChatHeader = () => {
               {selectedChatData.name}
             </div>
           ) : (
-            <div className="text-zinc-900 dark:text-zinc-200">
-              {selectedChatData.firstName
-                ? `${selectedChatData.firstName} ${selectedChatData.lastName}`
-                : selectedChatData.email}
+            <div className="grid">
+              <div className="text-zinc-900 dark:text-zinc-200 truncate">
+                {selectedChatData.firstName
+                  ? `${selectedChatData.firstName} ${selectedChatData.lastName}`
+                  : selectedChatData.email}
+              </div>
+
+              {selectedChatData.isOnline ? (
+                <div className="text-sm text-purple-700 dark:text-purple-500 truncate">
+                  В мережі
+                </div>
+              ) : (
+                <div className="text-sm text-zinc-700 dark:text-zinc-500 truncate">
+                  В мережі: {dayjs(selectedChatData.lastOnline).fromNow()}
+                </div>
+              )}
             </div>
           )}
         </div>

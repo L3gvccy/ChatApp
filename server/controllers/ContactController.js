@@ -36,7 +36,7 @@ export const getContactsDM = async (req, res, next) => {
 
     const result = await ContactsDM.findOne({ user: id }).populate(
       "contacts.contact",
-      "_id firstName lastName email color image"
+      "_id firstName lastName email color image isOnline lastOnline"
     );
 
     const contacts =

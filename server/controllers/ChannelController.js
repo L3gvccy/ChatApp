@@ -11,8 +11,14 @@ export const getAllChannels = async (req, res) => {
     const channels = await Channel.find({
       $or: [{ owner: userId }, { members: userId }],
     })
-      .populate("owner", "_id firstName lastName email color image")
-      .populate("members", "_id firstName lastName email color image");
+      .populate(
+        "owner",
+        "_id firstName lastName email color image isOnline lastOnline"
+      )
+      .populate(
+        "members",
+        "_id firstName lastName email color image isOnline lastOnline"
+      );
 
     return res.status(200).json({ channels });
   } catch (error) {
@@ -44,8 +50,14 @@ export const uploadChannelImage = async (req, res) => {
       },
       { new: true }
     )
-      .populate("owner", "_id firstName lastName email color image")
-      .populate("members", "_id firstName lastName email color image");
+      .populate(
+        "owner",
+        "_id firstName lastName email color image isOnline lastOnline"
+      )
+      .populate(
+        "members",
+        "_id firstName lastName email color image isOnline lastOnline"
+      );
 
     return res.status(200).json({ channel, msg: "Зображення завантажено" });
   } catch (error) {
@@ -65,8 +77,14 @@ export const deleteChannelImage = async (req, res) => {
       },
       { new: true }
     )
-      .populate("owner", "_id firstName lastName email color image")
-      .populate("members", "_id firstName lastName email color image");
+      .populate(
+        "owner",
+        "_id firstName lastName email color image isOnline lastOnline"
+      )
+      .populate(
+        "members",
+        "_id firstName lastName email color image isOnline lastOnline"
+      );
     return res.status(200).json({ channel, msg: "Зображення видалено" });
   } catch (error) {
     console.log(error);
@@ -83,8 +101,14 @@ export const updateChannelName = async (req, res) => {
       { name: newName },
       { new: true }
     )
-      .populate("owner", "_id firstName lastName email color image")
-      .populate("members", "_id firstName lastName email color image");
+      .populate(
+        "owner",
+        "_id firstName lastName email color image isOnline lastOnline"
+      )
+      .populate(
+        "members",
+        "_id firstName lastName email color image isOnline lastOnline"
+      );
     return res.status(200).json({ channel, msg: "Назву каналу оновлено" });
   } catch (error) {
     console.log(error);
@@ -100,8 +124,14 @@ export const addChannelMember = async (req, res) => {
       { $addToSet: { members: memberId } },
       { new: true }
     )
-      .populate("owner", "_id firstName lastName email color image")
-      .populate("members", "_id firstName lastName email color image");
+      .populate(
+        "owner",
+        "_id firstName lastName email color image isOnline lastOnline"
+      )
+      .populate(
+        "members",
+        "_id firstName lastName email color image isOnline lastOnline"
+      );
     return res.status(200).json({ channel, msg: "Учасника додано до каналу" });
   } catch (error) {
     console.log(error);

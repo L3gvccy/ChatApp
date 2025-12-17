@@ -21,6 +21,7 @@ import NewChannel from "./new-channel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ThemeButton from "@/components/theme-button";
 import UnreadCount from "./unread-count";
+import OnlineIndicator from "./online-indicator";
 
 const ContactsContainer = () => {
   const {
@@ -89,25 +90,34 @@ const ContactsContainer = () => {
                     handleChooseContact(contact);
                   }}
                 >
-                  <Avatar className="h-12 w-12 rounded-full overflow-hidden ">
-                    {contact.image ? (
-                      <AvatarImage
-                        src={contact.image}
-                        alt="Фото профілю"
-                        className="object-cover w-full h-full bg-black"
+                  <div className="relative">
+                    <Avatar className="h-12 w-12 rounded-full overflow-hidden relative">
+                      {contact.image ? (
+                        <AvatarImage
+                          src={contact.image}
+                          alt="Фото профілю"
+                          className="object-cover w-full h-full bg-black"
+                        />
+                      ) : (
+                        <div
+                          className={`uppercase h-12 w-12 text-2xl rounded-full flex justify-center items-center ${getColor(
+                            contact.color
+                          )}`}
+                        >
+                          {contact.firstName
+                            ? contact.firstName.split("").shift()
+                            : contact.email.split("").shift()}
+                        </div>
+                      )}
+                    </Avatar>
+                    {contact.isOnline && (
+                      <OnlineIndicator
+                        size={2.5}
+                        active={selectedChatData?._id === contact._id}
                       />
-                    ) : (
-                      <div
-                        className={`uppercase h-12 w-12 text-2xl rounded-full flex justify-center items-center ${getColor(
-                          contact.color
-                        )}`}
-                      >
-                        {contact.firstName
-                          ? contact.firstName.split("").shift()
-                          : contact.email.split("").shift()}
-                      </div>
                     )}
-                  </Avatar>
+                  </div>
+
                   <div
                     className={`flex-1 min-w-0 flex justify-between items-center dark:text-zinc-300 ${
                       selectedChatData?._id === contact._id

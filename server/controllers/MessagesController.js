@@ -36,7 +36,10 @@ export const getChannelMessages = async (req, res, next) => {
 
     const messages = await Message.find({ channel: channelId })
       .sort({ timestamp: 1 })
-      .populate("sender", "id email firstName lastName image color");
+      .populate(
+        "sender",
+        "id email firstName lastName image color isOnline lastOnline"
+      );
 
     return res.status(200).json({ messages });
   } catch (error) {

@@ -22,6 +22,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useAppStore } from "@/store";
 import useDebounce from "@/hooks/useDebounce";
+import { toast } from "sonner";
 
 const NewDM = () => {
   const { setSelectedChatType, setSelectedChatData } = useAppStore();
@@ -67,9 +68,10 @@ const NewDM = () => {
 
   const handleChooseContact = (contact) => {
     setNewDMModalOpen(false);
+    setSearchContacts("");
     setSelectedChatType("contact");
     setSelectedChatData(contact);
-    setSearchContacts([]);
+    setContacts([]);
   };
 
   return (

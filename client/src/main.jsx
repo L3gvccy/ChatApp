@@ -8,9 +8,11 @@ import { ThemeProvider } from "./context/ThemeContext";
 
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/uk";
 
 dayjs.extend(localizedFormat);
+dayjs.extend(relativeTime);
 
 const supportedLocales = ["uk", "en"];
 const browserLocale = navigator.language || "en";

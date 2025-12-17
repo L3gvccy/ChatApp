@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,8 @@ import ThemeButton from "@/components/theme-button";
 export default function Auth() {
   const navigate = useNavigate();
   const { userInfo, setUserInfo } = useAppStore();
+  const loginBtnRef = useRef();
+  const registerBtnRef = useRef();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -129,6 +131,11 @@ export default function Auth() {
                     type="email"
                     className="rounded-xl p-3"
                     value={email}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        loginBtnRef.current.click();
+                      }
+                    }}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   <Input
@@ -136,9 +143,15 @@ export default function Auth() {
                     type="password"
                     className="rounded-xl p-3"
                     value={password}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        loginBtnRef.current.click();
+                      }
+                    }}
                     onChange={(e) => setPassword(e.target.value)}
                   />
                   <Button
+                    ref={loginBtnRef}
                     className="rounded-xl p-3 bg-purple-700 hover:bg-purple-600 active:bg-purple-800 dark:text-zinc-100 cursor-pointer"
                     onClick={handleLogin}
                   >
@@ -151,6 +164,11 @@ export default function Auth() {
                     type="email"
                     className="rounded-xl p-3"
                     value={email}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        registerBtnRef.current.click();
+                      }
+                    }}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   <Input
@@ -158,6 +176,11 @@ export default function Auth() {
                     type="password"
                     className="rounded-xl p-3"
                     value={password}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        registerBtnRef.current.click();
+                      }
+                    }}
                     onChange={(e) => setPassword(e.target.value)}
                   />
                   <Input
@@ -165,9 +188,15 @@ export default function Auth() {
                     type="password"
                     className="rounded-xl p-3"
                     value={confirmPassword}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        registerBtnRef.current.click();
+                      }
+                    }}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                   <Button
+                    ref={registerBtnRef}
                     className="rounded-xl p-3 bg-purple-700 hover:bg-purple-600 active:bg-purple-800 cursor-pointer"
                     onClick={handleRegister}
                   >

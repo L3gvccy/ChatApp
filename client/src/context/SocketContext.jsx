@@ -56,6 +56,35 @@ export const SocketProvider = ({ children }) => {
         }
       };
 
+      const updateUser = (user) => {
+        const {
+          directMessagesContacts,
+          setDirectMessagesContacts,
+          selectedChatData,
+          selectedChatType,
+          setSelectedChatData,
+        } = useAppStore.getState();
+        console.log(directMessagesContacts, user);
+
+        const newContacts = [...directMessagesContacts].map((c) => {
+          if (c.contact._id === user._id) {
+            const updatedContact = c;
+            c.contact = user;
+            return updatedContact;
+          }
+          return c;
+        });
+
+        if (
+          selectedChatType === "contact" &&
+          selectedChatData._id === user._id
+        ) {
+          setSelectedChatData(user);
+        }
+
+        setDirectMessagesContacts(newContacts);
+      };
+
       const updateContacts = (contacts) => {
         const { setDirectMessagesContacts } = useAppStore.getState();
 
@@ -116,6 +145,7 @@ export const SocketProvider = ({ children }) => {
       };
 
       socket.current.on("recieveMessage", handleRecieveMessage);
+      socket.current.on("userUpdated", updateUser);
       socket.current.on("updateContacts", updateContacts);
       socket.current.on("channelCreated", handleAddChannel);
       socket.current.on("channelUpdated", handleChannelUpdated);
