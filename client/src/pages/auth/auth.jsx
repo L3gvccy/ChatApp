@@ -64,9 +64,6 @@ export default function Auth() {
       .catch((err) => {
         const msg = err.response?.data;
         toast.error(msg);
-      })
-      .finally(() => {
-        userInfo.profileSetup ? navigate("/chat") : navigate("/profile");
       });
   };
 

@@ -14,6 +14,7 @@ import { ClimbingBoxLoader } from "react-spinners";
 const MessageBar = () => {
   const emojiRef = useRef();
   const fileInputRef = useRef();
+  const sendBtnRef = useRef();
   const socket = useSocket();
   const theme = localStorage.getItem("theme");
   const { selectedChatType, selectedChatData, userInfo } = useAppStore();
@@ -104,6 +105,20 @@ const MessageBar = () => {
     }
   };
 
+  const handleEnterPress = (event) => {
+    if (event.key === "Enter") {
+      sendBtnRef.current.click();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleEnterPress);
+
+    return () => {
+      document.removeEventListener("keydown", handleEnterPress);
+    };
+  }, []);
+
   return (
     <div className="h-[10vh] dark:bg-zinc-900 flex justify-center items-center px-8 mb-3 gap-2 md:gap-5">
       <div className="flex-1 flex bg-zinc-200 dark:bg-zinc-800 rounded-full items-center gap-1 md:gap-5 pr-5">
@@ -153,6 +168,7 @@ const MessageBar = () => {
       </div>
 
       <button
+        ref={sendBtnRef}
         className="text-xl rounded-full p-3 bg-purple-700 hover:bg-purple-600 active:bg-purple-800 cursor-pointer"
         onClick={handleSendMessage}
       >
