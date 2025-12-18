@@ -40,22 +40,26 @@ const setupSocket = (server) => {
         { new: true }
       );
 
-      const userContacts = await ContactsDM.findOne({ user: userId }).populate(
-        "contacts.contact",
-        "_id firstName lastName email color image isOnline lastOnline"
-      );
+      const userContacts = await ContactsDM.findOne({ user: userId })
+        .populate(
+          "contacts.contact",
+          "_id firstName lastName email color image isOnline lastOnline"
+        )
+        .populate("contacts.lastMessage");
 
-      const contactIds = userContacts.contacts.map((c) => {
-        return c.contact._id.toString();
-      });
+      if (userContacts) {
+        const contactIds = userContacts.contacts.map((c) => {
+          return c.contact._id.toString();
+        });
 
-      contactIds.forEach((contactId) => {
-        const contactSocketId = userSocketMap.get(contactId);
+        contactIds.forEach((contactId) => {
+          const contactSocketId = userSocketMap.get(contactId);
 
-        if (contactSocketId) {
-          io.to(contactSocketId).emit("userUpdated", updatedUser);
-        }
-      });
+          if (contactSocketId) {
+            io.to(contactSocketId).emit("userUpdated", updatedUser);
+          }
+        });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -156,9 +160,16 @@ const setupSocket = (server) => {
   const sendChannelMessage = async (message) => {
     const senderSocketId = userSocketMap.get(message.sender.toString());
 
+    const createdMessage = await Message.create(message);
+
+    const messageData = await Message.findById(createdMessage._id).populate(
+      "sender",
+      "_id email firstName lastName image color isOnline lastOnline"
+    );
+
     const channel = await Channel.findByIdAndUpdate(
       message.channel,
-      { lastActivity: Date.now() },
+      { lastActivity: Date.now(), lastMessage: createdMessage._id },
       { new: true }
     )
       .populate(
@@ -168,16 +179,16 @@ const setupSocket = (server) => {
       .populate(
         "members",
         "_id firstName lastName email color image isOnline lastOnline"
-      );
+      )
+      .populate({
+        path: "lastMessage",
+        populate: {
+          path: "sender",
+          select: "firstName",
+        },
+      });
 
     const ownerSocketId = userSocketMap.get(channel.owner._id.toString());
-
-    const createdMessage = await Message.create(message);
-
-    const messageData = await Message.findById(createdMessage._id).populate(
-      "sender",
-      "_id email firstName lastName image color isOnline lastOnline"
-    );
 
     if (senderSocketId) {
       io.to(senderSocketId).emit("recieveMessage", messageData);
@@ -268,7 +279,14 @@ const setupSocket = (server) => {
       .populate(
         "members",
         "_id firstName lastName email color image isOnline lastOnline"
-      );
+      )
+      .populate({
+        path: "lastMessage",
+        populate: {
+          path: "sender",
+          select: "firstName",
+        },
+      });
 
     const ownerSocketId = userSocketMap.get(
       updatedChannel.owner._id.toString()

@@ -18,7 +18,14 @@ export const getAllChannels = async (req, res) => {
       .populate(
         "members",
         "_id firstName lastName email color image isOnline lastOnline"
-      );
+      )
+      .populate({
+        path: "lastMessage",
+        populate: {
+          path: "sender",
+          select: "firstName",
+        },
+      });
 
     return res.status(200).json({ channels });
   } catch (error) {
@@ -57,7 +64,14 @@ export const uploadChannelImage = async (req, res) => {
       .populate(
         "members",
         "_id firstName lastName email color image isOnline lastOnline"
-      );
+      )
+      .populate({
+        path: "lastMessage",
+        populate: {
+          path: "sender",
+          select: "firstName",
+        },
+      });
 
     return res.status(200).json({ channel, msg: "Зображення завантажено" });
   } catch (error) {
@@ -84,7 +98,14 @@ export const deleteChannelImage = async (req, res) => {
       .populate(
         "members",
         "_id firstName lastName email color image isOnline lastOnline"
-      );
+      )
+      .populate({
+        path: "lastMessage",
+        populate: {
+          path: "sender",
+          select: "firstName",
+        },
+      });
     return res.status(200).json({ channel, msg: "Зображення видалено" });
   } catch (error) {
     console.log(error);
@@ -108,7 +129,14 @@ export const updateChannelName = async (req, res) => {
       .populate(
         "members",
         "_id firstName lastName email color image isOnline lastOnline"
-      );
+      )
+      .populate({
+        path: "lastMessage",
+        populate: {
+          path: "sender",
+          select: "firstName",
+        },
+      });
     return res.status(200).json({ channel, msg: "Назву каналу оновлено" });
   } catch (error) {
     console.log(error);
@@ -131,7 +159,14 @@ export const addChannelMember = async (req, res) => {
       .populate(
         "members",
         "_id firstName lastName email color image isOnline lastOnline"
-      );
+      )
+      .populate({
+        path: "lastMessage",
+        populate: {
+          path: "sender",
+          select: "firstName",
+        },
+      });
     return res.status(200).json({ channel, msg: "Учасника додано до каналу" });
   } catch (error) {
     console.log(error);

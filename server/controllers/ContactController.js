@@ -34,10 +34,12 @@ export const getContactsDM = async (req, res, next) => {
     let { userId } = req;
     const id = new mongoose.Types.ObjectId(userId);
 
-    const result = await ContactsDM.findOne({ user: id }).populate(
-      "contacts.contact",
-      "_id firstName lastName email color image isOnline lastOnline"
-    );
+    const result = await ContactsDM.findOne({ user: id })
+      .populate(
+        "contacts.contact",
+        "_id firstName lastName email color image isOnline lastOnline"
+      )
+      .populate("contacts.lastMessage");
 
     const contacts =
       [...result?.contacts].sort((a, b) => {

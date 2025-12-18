@@ -22,6 +22,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import ThemeButton from "@/components/theme-button";
 import UnreadCount from "./unread-count";
 import OnlineIndicator from "./online-indicator";
+import DisplayLastMessage from "./display-last-message";
+import dayjs from "dayjs";
 
 const ContactsContainer = () => {
   const {
@@ -66,7 +68,7 @@ const ContactsContainer = () => {
   };
 
   return (
-    <div className="relative md:w-[35vw] lg:w-[30vw] xl:w-[20vw] w-full border-purple-200 dark:bg-zinc-900 border-r-2 dark:border-zinc-800">
+    <div className="relative md:w-[40vw] lg:w-[30vw] xl:w-[25vw] w-full border-purple-200 dark:bg-zinc-900 border-r-2 dark:border-zinc-800">
       <Logo />
       <ScrollArea className="h-[80vh]">
         <div className="my-5">
@@ -74,14 +76,14 @@ const ContactsContainer = () => {
             <Title text="Особисті чати" />
             <NewDM />
           </div>
-          {directMessagesContacts.map((contact, i) => {
-            contact = contact.contact;
+          {directMessagesContacts.map((contactInfo, i) => {
+            const contact = contactInfo.contact;
 
             return (
               <div className="flex w-full px-4 mb-2" key={contact._id}>
                 <div
                   key={i}
-                  className={`flex w-full gap-2 rounded-lg cursor-pointer p-3 ${
+                  className={`flex w-full gap-2 rounded-lg cursor-pointer p-3 items-center ${
                     selectedChatData?._id === contact._id
                       ? "bg-purple-800 hover:bg-purple-700"
                       : "hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800"
@@ -117,24 +119,48 @@ const ContactsContainer = () => {
                       />
                     )}
                   </div>
+                  <div className="grid grid-cols-[1fr_auto] w-full">
+                    <div
+                      className={`flex-1 min-w-0 flex flex-col gap-1 items-center dark:text-zinc-300 ${
+                        selectedChatData?._id === contact._id
+                          ? "text-zinc-100"
+                          : "text-zinc-900"
+                      }`}
+                    >
+                      <div className="w-full grid grid-cols-[1fr_auto] items-center gap-2">
+                        <div className="min-w-0 overflow-hidden">
+                          <p className="text-md truncate whitespace-nowrap font-semibold">
+                            {contact?.firstName
+                              ? `${contact.firstName} ${contact.lastName}`
+                              : contact.email}
+                          </p>
+                        </div>
 
-                  <div
-                    className={`flex-1 min-w-0 flex justify-between items-center dark:text-zinc-300 ${
-                      selectedChatData?._id === contact._id
-                        ? "text-zinc-100"
-                        : "text-zinc-900"
-                    }`}
-                  >
-                    <div className="w-full grid grid-cols-[1fr_auto] items-center gap-2">
-                      <div className="min-w-0 overflow-hidden">
-                        <p className="text-md truncate whitespace-nowrap">
-                          {contact?.firstName
-                            ? `${contact.firstName} ${contact.lastName}`
-                            : contact.email}
-                        </p>
+                        <div
+                          className={`text-xs ${
+                            selectedChatData?._id === contact._id
+                              ? "text-zinc-300"
+                              : "text-zinc-500"
+                          }`}
+                        >
+                          {dayjs(contactInfo.lastMessage.timestamp).format(
+                            "LT"
+                          )}
+                        </div>
                       </div>
 
-                      <UnreadCount id={contact._id} />
+                      <div className="w-full grid grid-cols-[1fr_auto] items-center gap-2">
+                        {contactInfo.lastMessage && (
+                          <>
+                            <DisplayLastMessage
+                              chatType="contact"
+                              message={contactInfo.lastMessage}
+                              isSelected={selectedChatData?._id === contact._id}
+                            />
+                            <UnreadCount id={contact._id} />
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -180,21 +206,48 @@ const ContactsContainer = () => {
                       </div>
                     )}
                   </Avatar>
-                  <div
-                    className={`flex flex-1 flex-col justify-center dark:text-zinc-300 ${
-                      selectedChatData?._id === channel._id
-                        ? "text-zinc-100"
-                        : "text-zinc-900"
-                    }`}
-                  >
-                    <div className="w-full grid grid-cols-[1fr_auto] items-center gap-2">
-                      <div className="min-w-0 overflow-hidden">
-                        <p className="text-md truncate whitespace-nowrap">
-                          {channel.name}
-                        </p>
+                  <div className="grid grid-cols-[1fr_auto] w-full">
+                    <div
+                      className={`flex flex-1 flex-col justify-center dark:text-zinc-300 ${
+                        selectedChatData?._id === channel._id
+                          ? "text-zinc-100"
+                          : "text-zinc-900"
+                      }`}
+                    >
+                      <div className="w-full grid grid-cols-[1fr_auto] items-center gap-2">
+                        <div className="min-w-0 overflow-hidden">
+                          <p className="text-md truncate whitespace-nowrap font-semibold">
+                            {channel.name}
+                          </p>
+                        </div>
+
+                        <div
+                          className={`text-xs ${
+                            selectedChatData?._id === channel._id
+                              ? "text-zinc-300"
+                              : "text-zinc-500"
+                          }`}
+                        >
+                          {channel?.lastMessage
+                            ? `${dayjs(channel?.lastMessage?.timestamp).format(
+                                "LT"
+                              )}`
+                            : `${dayjs(channel.lastActivity).format("LT")}`}
+                        </div>
                       </div>
 
-                      <UnreadCount id={channel._id} />
+                      <div className="w-full grid grid-cols-[1fr_auto] items-center gap-2">
+                        {channel.lastMessage && (
+                          <>
+                            <DisplayLastMessage
+                              chatType="channel"
+                              message={channel.lastMessage}
+                              isSelected={selectedChatData?._id === channel._id}
+                            />
+                            <UnreadCount id={channel._id} />
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
