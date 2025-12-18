@@ -89,7 +89,10 @@ export const SocketProvider = ({ children }) => {
         const { setDirectMessagesContacts } = useAppStore.getState();
 
         const sortedContacts = [...contacts].sort((a, b) => {
-          return new Date(b.lastMessageTime) - new Date(a.lastMessageTime);
+          return (
+            new Date(b.lastMessage.timestamp) -
+            new Date(a.lastMessage.timestamp)
+          );
         });
 
         sortedContacts.length > 0 && setDirectMessagesContacts(sortedContacts);

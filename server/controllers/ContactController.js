@@ -41,7 +41,9 @@ export const getContactsDM = async (req, res, next) => {
 
     const contacts =
       [...result?.contacts].sort((a, b) => {
-        return new Date(b.lastMessageTime) - new Date(a.lastMessageTime);
+        return (
+          new Date(b.lastMessage.timestamp) - new Date(a.lastMessage.timestamp)
+        );
       }) || [];
 
     return res.status(200).json({ contacts });

@@ -32,6 +32,11 @@ const channelSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  lastMessage: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Messages",
+    default: null,
+  },
 });
 
 const Channel = mongoose.model("Channels", channelSchema);

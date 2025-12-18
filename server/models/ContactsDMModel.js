@@ -12,8 +12,9 @@ const contactsDMSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Users",
       },
-      lastMessageTime: {
-        type: Date,
+      lastMessage: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Messages",
         default: null,
       },
     },

@@ -34,6 +34,12 @@ const setupSocket = (server) => {
       const userSocketId = userSocketMap.get(userId);
       const id = new mongoose.Types.ObjectId(userId);
 
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: userId },
+        { isOnline: isOnline, lastOnline: new Date() },
+        { new: true }
+      );
+
       const userContacts = await ContactsDM.findOne({ user: userId }).populate(
         "contacts.contact",
         "_id firstName lastName email color image isOnline lastOnline"
@@ -42,12 +48,6 @@ const setupSocket = (server) => {
       const contactIds = userContacts.contacts.map((c) => {
         return c.contact._id.toString();
       });
-
-      const updatedUser = await User.findOneAndUpdate(
-        { _id: userId },
-        { isOnline: isOnline, lastOnline: new Date() },
-        { new: true }
-      );
 
       contactIds.forEach((contactId) => {
         const contactSocketId = userSocketMap.get(contactId);
@@ -83,7 +83,7 @@ const setupSocket = (server) => {
         "contacts.contact": message.reciever,
       },
       {
-        $set: { "contacts.$.lastMessageTime": new Date() },
+        $set: { "contacts.$.lastMessage": createdMessage._id },
       },
       { new: true }
     );
@@ -95,17 +95,19 @@ const setupSocket = (server) => {
           $push: {
             contacts: {
               contact: message.reciever,
-              lastMessageTime: new Date(),
+              lastMessage: createdMessage._id,
             },
           },
         },
         { upsert: true }
       );
     }
-    updatedSender = await ContactsDM.findOne({ user: message.sender }).populate(
-      "contacts.contact",
-      "_id firstName lastName email color image isOnline lastOnline"
-    );
+    updatedSender = await ContactsDM.findOne({ user: message.sender })
+      .populate(
+        "contacts.contact",
+        "_id firstName lastName email color image isOnline lastOnline"
+      )
+      .populate("contacts.lastMessage");
 
     let updatedReciever = await ContactsDM.findOneAndUpdate(
       {
@@ -113,7 +115,7 @@ const setupSocket = (server) => {
         "contacts.contact": message.sender,
       },
       {
-        $set: { "contacts.$.lastMessageTime": new Date() },
+        $set: { "contacts.$.lastMessage": createdMessage._id },
       },
       { new: true }
     );
@@ -125,7 +127,7 @@ const setupSocket = (server) => {
           $push: {
             contacts: {
               contact: message.sender,
-              lastMessageTime: new Date(),
+              lastMessage: createdMessage._id,
             },
           },
         },
@@ -134,10 +136,12 @@ const setupSocket = (server) => {
     }
     updatedReciever = await ContactsDM.findOne({
       user: message.reciever,
-    }).populate(
-      "contacts.contact",
-      "_id firstName lastName email color image isOnline lastOnline"
-    );
+    })
+      .populate(
+        "contacts.contact",
+        "_id firstName lastName email color image isOnline lastOnline"
+      )
+      .populate("contacts.lastMessage");
 
     if (recieverSocketId) {
       io.to(recieverSocketId).emit("recieveMessage", messageData);
