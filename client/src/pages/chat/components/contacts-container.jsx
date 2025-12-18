@@ -58,7 +58,6 @@ const ContactsContainer = () => {
     setSelectedChatType("channel");
     setSelectedChatData(channel);
     ResetUnreadCount(channel._id);
-    console.log(channel._id);
 
     await apiClient.post(
       MARK_AS_READ_ROUTE,

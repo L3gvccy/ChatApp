@@ -1,7 +1,6 @@
 import React from "react";
 
 const DisplayLastMessage = ({ chatType, message, isSelected }) => {
-  console.log(message);
   return (
     <div
       className={`text-sm h-6 truncate  ${

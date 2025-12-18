@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/uk";
+import { NotificationProvider } from "./context/NotificationContext";
 
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
@@ -24,13 +25,14 @@ console.log(dayjs.locale());
 
 createRoot(document.getElementById("root")).render(
   // <StrictMode>
-
-  <SocketProvider>
-    <ThemeProvider>
-      <App />
-      <Toaster position="top-center" closeButton />
-    </ThemeProvider>
-  </SocketProvider>
+  <NotificationProvider>
+    <SocketProvider>
+      <ThemeProvider>
+        <App />
+        <Toaster position="top-center" closeButton />
+      </ThemeProvider>
+    </SocketProvider>
+  </NotificationProvider>
 
   // </StrictMode>,
 );

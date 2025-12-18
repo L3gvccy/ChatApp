@@ -4,6 +4,7 @@ import { useAppStore } from "@/store";
 import { GET_CONTACTS_DM_ROUTE, HOST } from "@/utils/constants";
 import { createContext, useState, useEffect, useRef, useContext } from "react";
 import { io } from "socket.io-client";
+import { useNotification } from "./NotificationContext";
 
 const SocketContext = createContext(null);
 
@@ -14,6 +15,7 @@ export const useSocket = () => {
 export const SocketProvider = ({ children }) => {
   const socket = useRef();
   const { userInfo } = useAppStore();
+  const { addNotification } = useNotification();
 
   useEffect(() => {
     if (userInfo) {
@@ -53,6 +55,8 @@ export const SocketProvider = ({ children }) => {
           message.reciever
             ? AddUnreadCount(message.sender._id)
             : AddUnreadCount(message.channel);
+
+          addNotification(message);
         }
       };
 
