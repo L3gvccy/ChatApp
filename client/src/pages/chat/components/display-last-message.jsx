@@ -10,7 +10,7 @@ const DisplayLastMessage = ({ chatType, message, isSelected }) => {
       {chatType === "channel" && (
         <span className="font-semibold">{`${message.sender.firstName}: `}</span>
       )}
-      {`${message.type === "text" ? `${message.content}` : `Файл`}`}
+      {`${message.type === "text" ? `${message.content}` : `1 Файл`}`}
     </div>
   );
 };
