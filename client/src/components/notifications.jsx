@@ -83,7 +83,9 @@ const Notification = ({ message, remove }) => {
             <IoClose />
           </div>
         </div>
-        <div>{message.content ? message.content : "1 Файл"}</div>
+        <div className="truncate">
+          {message.content ? message.content : "1 Файл"}
+        </div>
       </div>
       <audio
         ref={audioRef}
