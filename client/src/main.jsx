@@ -21,8 +21,6 @@ const locale = browserLocale.split("-")[0];
 
 dayjs.locale(supportedLocales.includes(locale) ? locale : "en");
 
-console.log(dayjs.locale());
-
 createRoot(document.getElementById("root")).render(
   // <StrictMode>
   <NotificationProvider>

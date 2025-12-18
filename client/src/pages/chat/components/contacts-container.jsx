@@ -179,7 +179,7 @@ const ContactsContainer = () => {
               <div className="flex w-full px-4 mb-2" key={channel._id}>
                 <div
                   key={i}
-                  className={`flex w-full gap-5  rounded-lg cursor-pointer p-3 ${
+                  className={`flex w-full gap-2  rounded-lg cursor-pointer p-3 ${
                     selectedChatData?._id === channel._id
                       ? "bg-purple-800 hover:bg-purple-700"
                       : "hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800"

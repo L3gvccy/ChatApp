@@ -31,21 +31,21 @@ const Notification = ({ message, remove }) => {
         <div className="grid grid-cols-[auto_1fr_auto] gap-2">
           {message.reciever ? (
             <Avatar className="h-8 w-8 rounded-full overflow-hidden relative">
-              {message.reciever.image ? (
+              {message.sender.image ? (
                 <AvatarImage
-                  src={message.reciever.image}
+                  src={message.sender.image}
                   alt="Фото профілю"
                   className="object-cover w-full h-full bg-black"
                 />
               ) : (
                 <div
                   className={`uppercase h-8 w-8 text-lg rounded-full flex justify-center items-center ${getColor(
-                    message.reciever.color
+                    message.sender.color
                   )}`}
                 >
-                  {message.reciever.firstName
-                    ? message.reciever.firstName.split("").shift()
-                    : message.reciever.email.split("").shift()}
+                  {message.sender.firstName
+                    ? message.sender.firstName.split("").shift()
+                    : message.sender.email.split("").shift()}
                 </div>
               )}
             </Avatar>
@@ -71,7 +71,7 @@ const Notification = ({ message, remove }) => {
 
           <div className="grid items-center truncate font-semibold">
             {message.reciever
-              ? `${message.reciever.firstName} ${message.reciever.lastName}`
+              ? `${message.sender.firstName} ${message.sender.lastName}`
               : `${message.channel.name}`}
           </div>
           <div

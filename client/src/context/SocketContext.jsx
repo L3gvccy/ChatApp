@@ -25,7 +25,6 @@ export const SocketProvider = ({ children }) => {
       });
 
       socket.current.on("connect", () => {
-        console.log(userInfo);
         console.log("Connected to socket server");
       });
 
