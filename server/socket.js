@@ -162,10 +162,33 @@ const setupSocket = (server) => {
 
     const createdMessage = await Message.create(message);
 
-    const messageData = await Message.findById(createdMessage._id).populate(
-      "sender",
-      "_id email firstName lastName image color isOnline lastOnline"
-    );
+    const messageData = await Message.findById(createdMessage._id)
+      .populate(
+        "sender",
+        "_id email firstName lastName image color isOnline lastOnline"
+      )
+      .populate({
+        path: "channel",
+        populate: [
+          {
+            path: "owner",
+            select:
+              "_id firstName lastName email color image isOnline lastOnline",
+          },
+          {
+            path: "members",
+            select:
+              "_id firstName lastName email color image isOnline lastOnline",
+          },
+          {
+            path: "lastMessage",
+            populate: {
+              path: "sender",
+              select: "firstName",
+            },
+          },
+        ],
+      });
 
     const channel = await Channel.findByIdAndUpdate(
       message.channel,

@@ -48,7 +48,7 @@ export const SocketProvider = ({ children }) => {
           addMessage(message);
         } else if (
           selectedChatType == "channel" &&
-          selectedChatData._id === message.channel
+          selectedChatData._id === message.channel._id
         ) {
           addMessage(message);
         } else if (message?.reciever?._id === userInfo._id || message.channel) {
@@ -56,7 +56,13 @@ export const SocketProvider = ({ children }) => {
             ? AddUnreadCount(message.sender._id)
             : AddUnreadCount(message.channel);
 
-          addNotification(message);
+          if (message.channel) {
+            if (message.channel._id !== selectedChatData?._id) {
+              addNotification(message);
+            }
+          } else {
+            addNotification(message);
+          }
         }
       };
 
