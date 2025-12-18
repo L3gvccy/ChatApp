@@ -14,19 +14,9 @@ import { LOGOUT_ROUTE } from "@/utils/constants";
 import { toast } from "sonner";
 
 const ProfileInfo = () => {
-  const trimName = (name) => {
-    let result;
-    if (name.length >= 20) {
-      result = name.slice(0, 20);
-      result += "...";
-      return result;
-    } else {
-      return name;
-    }
-  };
   const navigate = useNavigate();
   const { userInfo, setUserInfo } = useAppStore();
-  let fullName = trimName(`${userInfo.firstName} ${userInfo.lastName}`);
+  const fullName = `${userInfo.firstName} ${userInfo.lastName}`;
   const selectedColor = userInfo.color;
   const image = userInfo?.image || null;
 
@@ -71,8 +61,8 @@ const ProfileInfo = () => {
             </div>
           )}
         </Avatar>
-        <div className="flex items-center text-sm text-zinc-900 dark:text-zinc-100">
-          {fullName}
+        <div className="grid w-full items-center text-sm text-zinc-900 dark:text-zinc-100">
+          <div className="truncate">{fullName}</div>
         </div>
       </div>
       <div className="flex justify-between items-center gap-3 text-xl text-purple-700">

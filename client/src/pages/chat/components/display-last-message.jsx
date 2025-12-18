@@ -1,6 +1,8 @@
+import { useAppStore } from "@/store";
 import React from "react";
 
 const DisplayLastMessage = ({ chatType, message, isSelected }) => {
+  const { userInfo } = useAppStore();
   return (
     <div
       className={`text-sm h-6 truncate  ${
@@ -8,7 +10,11 @@ const DisplayLastMessage = ({ chatType, message, isSelected }) => {
       }`}
     >
       {chatType === "channel" && (
-        <span className="font-semibold">{`${message.sender.firstName}: `}</span>
+        <span className="font-semibold">{`${
+          message.sender.firstName === userInfo.firstName
+            ? "Ви"
+            : message.sender.firstName
+        }: `}</span>
       )}
       {`${message.type === "text" ? `${message.content}` : `1 Файл`}`}
     </div>
