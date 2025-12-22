@@ -24,12 +24,30 @@ export const NotificationProvider = ({ children }) => {
     }, 5000);
   }, []);
 
+  const removeChatNotifications = (message) => {
+    if (message.reciever) {
+      console.log(notifications, message.reciever);
+      setNotifications((prev) =>
+        prev.filter(
+          (n) => n.sender._id.toString() != message.sender._id.toString()
+        )
+      );
+    } else {
+      setNotifications((prev) =>
+        prev.filter(
+          (n) => n.channel._id.toString() != message.channel._id.toString()
+        )
+      );
+    }
+  };
+
   return (
     <NotificationContext.Provider value={{ addNotification }}>
       {children}
       <Notifications
         notifications={notifications}
         remove={removeNotification}
+        removeChatNotifications={removeChatNotifications}
       />
     </NotificationContext.Provider>
   );

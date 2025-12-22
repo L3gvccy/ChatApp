@@ -2,23 +2,37 @@ import React, { useEffect, useRef } from "react";
 import { IoClose } from "react-icons/io5";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { getColor } from "@/lib/utils";
+import { useAppStore } from "@/store";
 
-const Notifications = ({ notifications, remove }) => {
+const Notifications = ({ notifications, remove, removeChatNotifications }) => {
   return (
     <div className="fixed top-4 md:top-auto md:bottom-4 right-4 z-20 space-y-2">
       {notifications.map((message) => (
-        <Notification message={message} remove={remove} key={message._id} />
+        <Notification
+          message={message}
+          remove={remove}
+          key={message._id}
+          removeChatNotifications={removeChatNotifications}
+        />
       ))}
     </div>
   );
 };
 
-const Notification = ({ message, remove }) => {
+const Notification = ({ message, remove, removeChatNotifications }) => {
   const audioRef = useRef();
+  const { setSelectedChatType, setSelectedChatData } = useAppStore();
   const handleNotificationClick = (message) => {
+    console.log(message);
     if (message.reciever) {
+      setSelectedChatType("contact");
+      setSelectedChatData(message.sender);
     } else if (message.channel) {
+      setSelectedChatType("contact");
+      setSelectedChatData(message.channel);
     }
+
+    removeChatNotifications(message);
   };
 
   useEffect(() => {
@@ -27,7 +41,12 @@ const Notification = ({ message, remove }) => {
 
   return (
     <>
-      <div className="grid gap-2 rounded-md w-[90vw] max-w-[360px] p-3 border shadow-md border-zinc-200 bg-zinc-100 text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 cursor-pointer">
+      <div
+        className="grid gap-2 rounded-md w-[90vw] max-w-[360px] p-3 border shadow-md border-zinc-200 bg-zinc-100 text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 cursor-pointer"
+        onClick={() => {
+          handleNotificationClick(message);
+        }}
+      >
         <div className="grid grid-cols-[auto_1fr_auto] gap-2">
           {message.reciever ? (
             <Avatar className="h-8 w-8 rounded-full overflow-hidden relative">
