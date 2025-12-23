@@ -3,10 +3,11 @@ import { IoClose } from "react-icons/io5";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { getColor } from "@/lib/utils";
 import { useAppStore } from "@/store";
+import "./notification.css";
 
 const Notifications = ({ notifications, remove, removeChatNotifications }) => {
   return (
-    <div className="fixed top-4 md:top-auto md:bottom-4 right-4 z-20 space-y-2">
+    <div className="fixed top-4 md:top-auto md:bottom-4 right-4 z-20 flex flex-col-reverse md:flex-col gap-2">
       {notifications.map((message) => (
         <Notification
           message={message}
@@ -21,6 +22,7 @@ const Notifications = ({ notifications, remove, removeChatNotifications }) => {
 
 const Notification = ({ message, remove, removeChatNotifications }) => {
   const audioRef = useRef();
+  const notificationRef = useRef();
   const { setSelectedChatType, setSelectedChatData } = useAppStore();
   const handleNotificationClick = (message) => {
     console.log(message);
@@ -37,12 +39,16 @@ const Notification = ({ message, remove, removeChatNotifications }) => {
 
   useEffect(() => {
     audioRef.current.volume = "0.33";
+    setTimeout(() => {
+      notificationRef.current.classList.add("fade-out");
+    }, 4700);
   }, []);
 
   return (
     <>
       <div
-        className="grid gap-2 rounded-md w-[90vw] max-w-[360px] p-3 border shadow-md border-zinc-200 bg-zinc-100 text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 cursor-pointer"
+        ref={notificationRef}
+        className="fade-in grid gap-2 rounded-md w-[90vw] max-w-[360px] p-3 border shadow-md border-zinc-200 bg-zinc-100 text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 cursor-pointer"
         onClick={() => {
           handleNotificationClick(message);
         }}
